@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+<title>Fineltra</title>
+<style type="text/css">
+body { width : 700px; font-family: arial, sans-serif; font-size: 10pt; margin: 20px; margin-left: auto; margin-right: auto; }
+pre { font-family : "Courier New", monospace; background: #EEE; padding: 10px; margin-left: 15%; }
+pre.output { color: #000; background:none; margin-left: 5%; }
+pre.udf { color : #006; margin-left: 0; }
+pre.prompt { color : #700; margin-left: 0; }
+pre.comment { color : #040; background: none; margin-left: 7%; }
+p.comment { color : #040; margin-left: 5%; margin-right: 5%; }
+p.indentedcomment { color : #040; margin-left: 10%; }
+h1.title { font-family : arial, sans-serif; text-align : right; font-size : 24pt; padding-bottom: 5pt; }
+h1.comment, h1.comment a { font-family : arial, sans-serif; text-align : right; font-size : 16pt; color : #000; }
+h1.comment, h2.comment a { font-family : arial, sans-serif; text-align : right; font-size : 12pt; color : #000; }
+h1.title, h1.comment, h2.comment { border-bottom: 2px solid #e9b06e; }
+ul.comment { font-family : arial, sans-serif; font-size : 10pt; color : #040; margin-left: 10%; margin-right: 10%; padding-left:0; }
+img.euler { }
+p.image { text-align:center; margin-left:50px; }
+a:link { color:#448; font-weight:bolder; text-decoration:none; }
+a:visited { color:#446; font-weight:bolder; text-decoration:none; }
+</style>
+</head>
+
+<body>
+<h1 class="title">Fineltra</h1>
+<pre class="prompt">&gt;{koo,head,c,name}=readtable("TSP",&gt;clabs,&gt;rlabs);
+&gt;writetable(koo,wc=15,dc=3,&gt;fixed,labr=name,labc=head[2:5])
+</pre>
+<pre class="output">                             y              x              E              N
+     1067.628.0     614349.050     260393.400    2614349.562    1260393.893
+     1067.512.6     613421.260     264044.040    2613421.790    1264044.582
+     1067.423.0     611427.248     263238.753    2611427.735    1263239.298
+</pre>
+<p class="comment">Dreiecksfläche
+</p>
+<pre class="prompt">&gt;1/2*sum(crossproduct(koo[,1],koo[,2])')
+</pre>
+<pre class="output">4013278.59669
+</pre>
+<pre class="prompt">&gt;X:=koo[,3:4]|ones(3)'; x:=koo[,1:2]|ones(3)';
+&gt;A:=xlgs(x,X); A:=A', X:=X'; x:=x';
+</pre>
+<pre class="output">      1.00002  9.44205e-006  1.99999e+006 
+-6.28052e-006       1.00001        1e+006 
+            0             0             1 
+</pre>
+<pre class="prompt">&gt;long((A.x)')
+</pre>
+<pre class="output">        2614349.562         1260393.893                   1 
+         2613421.79         1264044.582                   1 
+        2611427.735         1263239.298                   1 
+</pre>
+<pre class="prompt">&gt;long((inv(A).X)')
+</pre>
+<pre class="output">          614349.05            260393.4                   1 
+          613421.26           264044.04                   1 
+         611427.248          263238.753                   1 
+</pre>
+<pre class="prompt">&gt;tst:=(([12,63;13,63;13,62;14,61]+[600,200])*1e3)|ones(4)', tst:=tst';
+</pre>
+<pre class="output">       612000        263000             1 
+       613000        263000             1 
+       613000        262000             1 
+       614000        261000             1 
+</pre>
+<pre class="prompt">&gt;long((A.tst)')
+</pre>
+<pre class="output">      2612000.49491       1263000.53858                   1 
+      2613000.51266        1263000.5323                   1 
+      2613000.50322       1262000.52047                   1 
+      2614000.51153       1261000.50237                   1 
+</pre>
+<pre class="prompt">&gt;eigen(A)
+</pre>
+<pre class="output">[ 1.00001+7.10802e-006i,  1.00001-7.10802e-006i,  1+0i  ]
+</pre>
+<pre class="prompt">&gt;omega:=atan2(A[1,1]+A[2,2],A[2,1]-A[1,2]), ...
+ {kx,ky}:=rect(omega,1); D:=[kx,-ky,0;ky,kx,0;0,0,1];
+</pre>
+<pre class="output">-7.86117260829e-006
+</pre>
+<pre class="prompt">&gt;S:=(D'.A)
+</pre>
+<pre class="output">      1.00002  1.58079e-006  1.99998e+006 
+ 1.58079e-006       1.00001  1.00002e+006 
+            0             0             1 
+</pre>
+<pre class="prompt">&gt;S-A
+</pre>
+<pre class="output"> 1.84728e-011 -7.86127e-006      -7.86124 
+ 7.86131e-006   4.3326e-011       15.7222 
+            0             0             0 
+</pre>
+<pre class="prompt">&gt;writetable(S[[1:2],3]|A[[1:2],3]|S[[1:2],3]-A[[1:2],3],wc=15,dc=3,&gt;fixed,labc=["a0/b0","dy/dx","dE/dN"])
+</pre>
+<pre class="output">          a0/b0          dy/dx          dE/dN
+    1999979.287    1999987.148         -7.861
+    1000016.994    1000001.272         15.722
+</pre>
+<pre class="prompt">&gt;{l,T}:=eigen(S); re(l[,[1:2]])-1, T:=re(T); for i=1 to 3; T[,i]=T[,i]/norm(T[,i]); end;
+</pre>
+<pre class="output">[1.81467e-005,  1.14308e-005]
+</pre>
+<pre class="prompt">&gt;theta:=atan2(T[1,1],-T[1,2]);
+&gt;{kx,ky}:=rect(theta,1); M:=[kx,-ky,0;ky,kx,0;0,0,1];
+</pre>
+</body>
+</html>

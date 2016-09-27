@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<head>
+<title>Geodaesie</title>
+<style type="text/css">
+body { width : 800px; font-family: arial, sans-serif; font-size: 10pt; margin: 20px; }
+pre { font-family : "Courier New", monospace; background: #EEE; padding: 10px; }
+pre.output { font-family : "Courier New", monospace; font-size : 10pt; margin-left: 20px; }
+pre.udf { font-family : "Courier New", monospace; font-size : 10pt; color : #007; }
+pre.prompt { font-family : "Courier New", monospace; font-size : 10pt; color : #700; }
+pre.comment { font-family : "Courier New", monospace; font-size : 10pt; color : #060; background: none; margin-left: 20px; }
+h1.title { font-family : arial, sans-serif; text-align : right; font-size : 240%; padding-bottom: 10px; border-bottom: 2px solid #e9b06e; }
+h1.comment { font-family : arial, sans-serif; text-align : right; font-size : 160%; color : #000; border-bottom: 2px solid #e9b06e; }
+img.euler { margin-left:20px; }
+p.image { text-align:center; }
+</style>
+</head>
+
+<body>
+<p>
+Sammlung grundlegender Funktionen für Vermessung &amp; Geodäsie
+</p>
+<pre class="function">
+function datan(x)
+
+  gibt den Winkel in Gon zurück
+</pre>
+<pre class="function">
+function datan2(y, x)
+
+  gibt das Azimut in Gon im richtigen Quadranten
+  bezueglich des Einheitskreises zurück 
+</pre>
+<pre class="function">
+function Meteokorrektur(t,p)
+
+ bringt meteorologisch bedingte Korrekturen an der Distanz an
+ t=Temperatur[°Celsius]; p=Druck [mbar]
+ und gibt Wert in ppm aus, (muss noch mit Distanz multipliziert werden!)
+</pre>
+<pre class="function">
+function DistRed(Ds,beta,i=0,s=0)
+
+ reduziert Rohmessungen in Horizontaldistanzen und Höhendifferenz
+ Ds: Schrägdistanz [m], beta: Höhenwinkel [Gon], I,S: Instr- resp. Zielhöhe
+</pre>
+<pre class="function">
+function geomDistRed(X,H)
+
+ reduziert meteorologisch korrigierte Horizontaldistanzen ins Projektionssystem
+ und gibt Wert in ppm aus, (muss mit Distanz multipliziert werden!)
+ X: Nordwert von Bern [km], H: H.ü.M [m]
+</pre>
+<pre class="function">
+function YXLaFi(y,x)
+
+  berechnet aus Landeskoordinaten geografische Länge und Breite
+  sowie Meridiankonvergenz und Längenverzerrung, Resultate in dezimalen Altgrad
+</pre>
+<pre class="function">
+function LaFiYX(Lambda,fi)
+
+ berechnet aus geografischen Koordinaten [dez. Altgrad] Landeskoordinaten
+</pre>
+<pre class="function">
+function HorAeq(phi=47.522582°,A,h=0°)
+
+ berechnet aus horizontalen Koordinaten (geogr. Breite, Azimut, Höhenwinkel [rad])
+ aequatoriale Koordinaten (Stundenwinkel und Deklination  [rad])
+</pre>
+<pre class="function">
+function AeqHor(phi=47.522582°,t,delta=23.44°)
+
+ berechnet aus aequatorialen Koordinaten (geogr. Breite, Stundenwinkel, Deklination [rad])
+ horizontale Koordinaten (Azimut und Höhenwinkel [rad])
+</pre>
+<pre class="function">
+function MagDek(t,y,x)
+
+ berechnet die magnetische Deklination in der Schweiz
+  t: Jahr, y: Ostwert von Bern [m], x: Nordwert von Bern [m]
+  Resultat in dezimalen Altgrad
+</pre>
+<pre class="function">
+function Gewichtsmatrix(a,b)
+
+ berechnet die Gewichtsmatrix für die Distanz-Eichstrecke in Aarau
+ Eingabe (a=[mm], b=[ppm]
+</pre>
+<pre class="function">
+function Schwend(A,l,a,b)
+
+ Berechnung von Additionskonstante und Pfeiler (Kern-Areal) nach Schwendener
+ A: Steuermatrix, l: Auswahl von Beobachtungen
+ a,b: mF a priori einer Distanz (a [mm] + b [ppm])
+ Ausgabe {x,Qxx,v,s02}
+</pre>
+<pre class="function">
+function LinRegr(M,x,y)
+
+ lineare Regression nach der Methode der kleinsten Fehlerquadrate
+ A: Übergabe Matrix, x: Spalten-Nr unabhängige Variable, y: Spalten-Nr abhängige Variable
+ Resultat liefert [2,1]-Vektor, also Y-Achsenabschnitt(a) und Steigung (b) aus y=a+bx
+</pre>
+<pre class="function">
+function LinRegr2(s)
+
+ lineare Regression nach der Methode der kleinsten Fehlerquadrate
+ s: Spaltenauswahl aus der Beobachtungsgruppe
+</pre>
+</body>
+</html>

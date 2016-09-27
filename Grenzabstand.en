@@ -1,0 +1,23 @@
+>load geometry
+Numerical and symbolic geometry.
+>GP1::=[134.673,388.774]; GP2::=[160.429,382.886]; 
+>S1::=[155.552,381.034]; S2::=[139.994,384.908]; S3::=[143.163,384.189];
+>setPlotRange(120,180,360,420); plotPoint(GP1,"GP1"); plotPoint(GP2,"GP2"); plotPoint(S3,"S3");
+>plotSegment(GP1,GP2,"");
+>H1 = lineIntersection(perpendicular(S1,lineThrough(GP1,GP2)),...
+>  lineThrough(GP1,GP2))
+[156.197,  383.854]
+>distance(H1,S1)
+2.89230097804
+>H2 = lineIntersection(perpendicular(S2,lineThrough(GP1,GP2)),...
+>  lineThrough(GP1,GP2))
+[140.57,  387.426]
+>distance(H2,S2)
+2.58294816327
+>H3 = lineIntersection(perpendicular(S3,lineThrough(GP1,GP2)),...
+>  lineThrough(GP1,GP2))
+[143.737,  386.702]
+>distance(H3,S3)
+2.57763000972
+>plotPoint(H1,"H1"); plotPoint(H2,"H2"); plotPoint(H3,"H3");
+>

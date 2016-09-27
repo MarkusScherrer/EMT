@@ -1,0 +1,226 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage{eumat}
+
+\begin{document}
+\begin{eulernotebook}
+\begin{eulerprompt}
+>At:=1*[0,600,1900,0,0,2600], Df:=[395,197,391,1011,239,0]
+\end{eulerprompt}
+\begin{euleroutput}
+  [0, 600, 1900, 0, 0, 2600]
+  [395, 197, 391, 1011, 239, 0]
+\end{euleroutput}
+\begin{eulerprompt}
+>load "D:\(\backslash\)Euler\(\backslash\)Euler Files\(\backslash\)LK.e";
+>writetable(Off|Def,wc=9,dc=0,>fixed,labc=lSK,labr=lTR)
+\end{eulerprompt}
+\begin{euleroutput}
+                  oI       oA       oK       dI       dA       dK
+         ST        7        5       13       69       44      129
+         SK       43       26       62       55       28       83
+         BS       66       22       11       69       32       23
+         AS       23       16       10      201      132       72
+         PR       16       26       23       60      132       81
+         LR       36      109       62       28       55       34
+\end{euleroutput}
+\begin{eulerprompt}
+>A:=Off[[2,3,6]]'; writetable(1000*(inv(A)_inv(Def[[1,4,5]])'),wc=9, ...
+>dc=2,>fixed,labc=["I","A","K"],labr=lTR[[2,3,6,1,4,5]]);
+\end{eulerprompt}
+\begin{euleroutput}
+                   I        A        K
+         SK     0.54   -12.00    20.79
+         BS    16.71     1.41   -12.18
+         LR    -3.50    11.75    -2.50
+         ST     0.61    -6.11     9.51
+         AS     6.88    -1.10    -3.31
+         PR    -7.08    10.71     0.13
+\end{euleroutput}
+\begin{eulerprompt}
+>P&:=P2; P[4,3]:=P1[4,3]; P&:=P;
+>writetable(P',labc=lTR,labr=lTR[[2,3,6]])
+\end{eulerprompt}
+\begin{euleroutput}
+                    ST        SK        BS        AS        PR        LR
+          SK         0         0         0         0       1.4      0.65
+          BS         2      1.27         0         0         0         0
+          LR         0         0      0.37      1.21         0         0
+\end{euleroutput}
+\begin{eulerprompt}
+>x1:=P'.Df'; x1:=A\(\backslash\)(A.x1+1000);
+>rD:=Df.Def+1000*[1,1,1]; b:=rD'; x:=A\(\backslash\)b;
+>c0:=rD; c1:=ones(3); c2:=sum(Kos[[2:3]]_Kos[6])'; c3:=Df.P/sum(Df.P); c4:=[1,1,2]*c0;
+>startlpsolve; c:=c0;
+>\{x2,obj,duals\}:=ilpsolve(A,b,c,eq=1);
+>X:=8*ceil((x1|x|x2)/8);
+>sol:=(X_zeros([3,3]))'.U';
+>shortestformat
+>battle(,)
+\end{eulerprompt}
+\begin{euleroutput}
+                    At       vAt       rAt       qAt        Df       vDf       rDf       qDf
+          ST         0         0         0         1       395       341        54      0.86
+          SK       600       600         0         1       197       171        26      0.86
+          BS      1900      1123       777      0.59       391       391         0         1
+          AS         0         0         0      0.59      1011      1011         0         1
+          PR         0         0         0      0.77       239       239         0         1
+          LR      2600      2009       591      0.77         0         0         0         1
+         sum      5100      3732      1368      4.73      2233      2153        80      5.73
+  
+                     I         A         K
+          rA    244800    340800    219300
+          rD    283620    201408    169450
+       rA-rD    -38820    139392     49850
+       rD/rA      1.16      0.59      0.77
+\end{euleroutput}
+\begin{eulerprompt}
+>battle(sol[1],)
+\end{eulerprompt}
+\begin{euleroutput}
+                    At       vAt       rAt       qAt        Df       vDf       rDf       qDf
+          ST         0         0         0         1       395       186       209      0.47
+          SK       344       344         0         1       197        93       104      0.47
+          BS      1048      1048         0         1       391       354        37       0.9
+          AS         0         0         0         1      1011       914        97       0.9
+          PR         0         0         0         1       239       167        72       0.7
+          LR      1376      1376         0         1         0         0         0       0.7
+         sum      2768      2768         0         6      2233      1714       519      4.14
+  
+                     I         A         K
+          rA    133496    181984    118168
+          rD    283620    201408    169450
+       rA-rD   -150124    -19424    -51282
+       rD/rA      2.12      1.11      1.43
+\end{euleroutput}
+\begin{eulerprompt}
+>battle(sol[2],)
+\end{eulerprompt}
+\begin{euleroutput}
+                    At       vAt       rAt       qAt        Df       vDf       rDf       qDf
+          ST         0         0         0         1       395       395         0         1
+          SK      1264      1263         1         1       197       197         0         1
+          BS      2960      2955         5         1       391       391         0         1
+          AS         0         0         0         1      1011      1011         0         1
+          PR         0         0         0         1       239       239         0         1
+          LR       952       950         2         1         0         0         0         1
+         sum      5176      5168         8      5.99      2233      2233         0         6
+  
+                     I         A         K
+          rA    283984    201752    169952
+          rD    283620    201408    169450
+       rA-rD       364       344       502
+       rD/rA         1         1         1
+\end{euleroutput}
+\begin{eulerprompt}
+>battle(sol[3],)
+\end{eulerprompt}
+\begin{euleroutput}
+                    At       vAt       rAt       qAt        Df       vDf       rDf       qDf
+          ST         0         0         0         1       395       395         0         1
+          SK         8         8         0         1       197       197         0         1
+          BS      3112      2044      1068      0.66       391       391         0         1
+          AS         0         0         0      0.66      1011      1011         0         1
+          PR         0         0         0         1       239       239         0         1
+          LR      2184      2176         8         1         0         0         0         1
+         sum      5304      4228      1076       5.3      2233      2233         0         6
+  
+                     I         A         K
+          rA    284360    306728    170136
+          rD    283620    201408    169450
+       rA-rD       740    105320       686
+       rD/rA         1      0.66         1
+\end{euleroutput}
+\begin{eulerprompt}
+>\{o,d\}:=fight(,);
+>writetable(([0:rows(o)-1])'|o|sum(o),wc=8,labc="Rnd"+lTR+"Sum"), writeln; ...
+>writetable(([0:rows(d)-1])'|d|sum(d),wc=8,labc="Rnd"+lTR+"Sum")
+\end{eulerprompt}
+\begin{euleroutput}
+       Rnd      ST      SK      BS      AS      PR      LR     Sum
+         0       0     600    1900       0       0    2600    5100
+         1       0     300    1338       0       0    1595    3233
+         2       0     163    1012       0       0    1054    2229
+         3       0     110     827       0       0     779    1716
+         4       0      86     724       0       0     639    1449
+         5       0      75     668       0       0     567    1310
+         6       0      69     637       0       0     528    1234
+  
+       Rnd      ST      SK      BS      AS      PR      LR     Sum
+         0     395     197     391    1011     239       0    2233
+         1     224     111     195     505     119       0    1154
+         2     112      55      97     252      59       0     575
+         3      56      27      48     126      29       0     286
+         4      28      13      24      63      14       0     142
+         5      14       6      12      31       7       0      70
+         6       0       0       0       0       0       0       0
+\end{euleroutput}
+\begin{eulerprompt}
+>plot2d([0:rows(o)-1],o',color=red); plot2d([0:rows(o)-1],d',>add); insimg;
+\end{eulerprompt}
+\eulerimg{27}{images/LK-001.png}
+\begin{eulerprompt}
+>\{o,d\}:=fight(sol[2],);
+>writetable(([0:rows(o)-1])'|o|sum(o),wc=8,labc="Rnd"+lTR+"Sum"), writeln; ...
+>writetable(([0:rows(d)-1])'|d|sum(d),wc=8,labc="Rnd"+lTR+"Sum")
+\end{eulerprompt}
+\begin{euleroutput}
+       Rnd      ST      SK      BS      AS      PR      LR     Sum
+         0       0    1264    2960       0       0     952    5176
+         1       0     632    1482       0       0     477    2591
+         2       0     316     741       0       0     238    1295
+         3       0     158     370       0       0     119     647
+         4       0      79     185       0       0      59     323
+         5       0      39      92       0       0      29     160
+         6       0      19      46       0       0      14      79
+  
+       Rnd      ST      SK      BS      AS      PR      LR     Sum
+         0     395     197     391    1011     239       0    2233
+         1     197      98     195     505     119       0    1114
+         2      98      49      97     252      59       0     555
+         3      49      24      48     126      29       0     276
+         4      24      12      24      64      14       0     138
+         5      12       6      12      34       7       0      71
+         6       0       0       0       0       0       0       0
+\end{euleroutput}
+\begin{eulerprompt}
+>plot2d([0:rows(o)-1],o',color=red); plot2d([0:rows(o)-1],d',>add); insimg;
+\end{eulerprompt}
+\eulerimg{27}{images/LK-002.png}
+\begin{eulerprompt}
+>\{o,d\}:=fight(sol[3],);
+>writetable(([0:rows(o)-1])'|o|sum(o),wc=8,labc="Rnd"+lTR+"Sum"), writeln; ...
+>writetable(([0:rows(d)-1])'|d|sum(d),wc=8,labc="Rnd"+lTR+"Sum")
+\end{eulerprompt}
+\begin{euleroutput}
+       Rnd      ST      SK      BS      AS      PR      LR     Sum
+         0       0       8    3112       0       0    2184    5304
+         1       0       4    2090       0       0    1096    3190
+         2       0       2    1452       0       0     585    2039
+         3       0       1    1066       0       0     345    1412
+         4       0       0     840       0       0     231    1071
+         5       0       0     711       0       0     175     886
+         6       0       0     638       0       0     146     784
+  
+       Rnd      ST      SK      BS      AS      PR      LR     Sum
+         0     395     197     391    1011     239       0    2233
+         1     197      98     195     505     119       0    1114
+         2      98      49      97     252      59       0     555
+         3      49      24      48     126      29       0     276
+         4      24      12      24      63      14       0     137
+         5      12       6      12      31       7       0      68
+         6       0       0       0       0       0       0       0
+\end{euleroutput}
+\begin{eulerprompt}
+>plot2d([0:rows(o)-1],o',color=red); plot2d([0:rows(o)-1],d',>add); insimg;
+\end{eulerprompt}
+\eulerimg{27}{images/LK-003.png}
+\begin{eulerprompt}
+>X
+\end{eulerprompt}
+\begin{euleroutput}
+      344    1264       8 
+     1048    2960    3112 
+     1376     952    2184 
+\end{euleroutput}
+\end{eulernotebook}
+\end{document}

@@ -1,0 +1,97 @@
+>phi::=47.5226°; A::=rad(-87); h::=6°;
+>phi::=83/100; A::=-26.5/1000; h::=1/10;
+>
+>::eq1: cos(delta)*cos(t)=cos(phi)*sin(h)+sin(phi)*cos(h)*cos(A)
+
+                                53       1       83
+       cos(delta) cos(t) = cos(----) cos(--) sin(---)
+                               2000      10      100
+                                                          1       83
+                                                    + sin(--) cos(---)
+                                                          10      100
+
+>::eq2: cos(delta)*sin(t)=cos(h)*sin(A)
+
+                                          53       1
+               cos(delta) sin(t) = - sin(----) cos(--)
+                                         2000      10
+
+>::eq3: sin(delta)=sin(phi)*sin(h)-cos(phi)*cos(h)*cos(A)
+
+                        1       83          53       1       83
+       sin(delta) = sin(--) sin(---) - cos(----) cos(--) cos(---)
+                        10      100        2000      10      100
+
+>::eq4: cos(h)*cos(A)=sin(phi)*cos(delta)*cos(t)-cos(phi)*sin(delta)
+
+            53       1         83
+       cos(----) cos(--) = sin(---) cos(delta) cos(t)
+           2000      10        100
+                                                       83
+                                                 - cos(---) sin(delta)
+                                                       100
+
+>::eq5: sin(h)=sin(phi)*sin(delta)+cos(phi)*cos(delta)*cos(t)
+
+           1         83                           83
+       sin(--) = cos(---) cos(delta) cos(t) + sin(---) sin(delta)
+           10        100                          100
+
+>:: solve(eq5,t); at(%,h=0)
+
+                                    83
+                                sin(---) sin(delta)
+                                    100
+                 [t = pi - acos(-------------------)]
+                                    83
+                                cos(---) cos(delta)
+                                    100
+
+>:: solve([eq1,eq2,eq3,eq4,e5],[delta,t])
+
+                                  []
+
+>::atan2(rhs(eq1),rhs(eq2))
+
+                      53       1       83         1       83
+                 cos(----) cos(--) sin(---) + sin(--) cos(---)
+                     2000      10      100        10      100
+       pi - atan(---------------------------------------------)
+                                    53       1
+                               sin(----) cos(--)
+                                   2000      10
+
+>::solve(eq3,d) | num
+
+                                  []
+
+>:: sol := solve([x+y=1,x^2+y^2=2],[x,y])
+
+               sqrt(3) - 1      sqrt(3) + 1
+       [[x = - -----------, y = -----------], 
+                    2                2
+                                      sqrt(3) + 1        sqrt(3) - 1
+                                 [x = -----------, y = - -----------]]
+                                           2                  2
+
+>mxmeval("map(rhs,sol[1])"), mxmeval("map(rhs,sol[2])")
+[-0.366025,  1.36603]
+[1.36603,  -0.366025]
+>
+>remvalue(all)
+>load "N:\2-vd\BereichVD\Mitarbeitende\_MA-sck\Euler Files\Geodaesie.e";
+>{t,delta,r}:=HorAeq(,103°,10°); r|deg(t)|deg(delta)
+[1.61883,  0.281373,  92.7521,  16.1215,  92.7521,  16.1215]
+>{A,h,r}:=AeqHor(,t,delta); r|deg(A)|deg(h)
+[-3.07043,  0.495835,  0.830472,  0.975583,  -175.923,  28.4092,
+47.5825,  55.8968,  -175.923,  28.4092,  47.5825,  55.8968]
+>remvalue(all)
+>::u
+
+                                  u
+
+>::clear(all)
+
+                              clear(all)
+
+>

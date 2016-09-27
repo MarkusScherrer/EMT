@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+<title>FoE</title>
+<style type="text/css">
+body { width : 700px; font-family: arial, sans-serif; font-size: 10pt; margin: 20px; margin-left: auto; margin-right: auto; }
+pre { font-family : "Courier New", monospace; background: #EEE; padding: 10px; margin-left: 15%; }
+pre.output { color: #000; background:none; margin-left: 5%; }
+pre.udf { color : #006; margin-left: 0; }
+pre.prompt { color : #700; margin-left: 0; }
+pre.comment { color : #040; background: none; margin-left: 7%; }
+p.comment { color : #040; margin-left: 5%; margin-right: 5%; }
+p.indentedcomment { color : #040; margin-left: 10%; }
+h1.title { font-family : arial, sans-serif; text-align : right; font-size : 24pt; padding-bottom: 5pt; }
+h1.comment, h1.comment a { font-family : arial, sans-serif; text-align : right; font-size : 16pt; color : #000; }
+h1.comment, h2.comment a { font-family : arial, sans-serif; text-align : right; font-size : 12pt; color : #000; }
+h1.title, h1.comment, h2.comment { border-bottom: 2px solid #e9b06e; }
+ul.comment { font-family : arial, sans-serif; font-size : 10pt; color : #040; margin-left: 10%; margin-right: 10%; padding-left:0; }
+img.euler { }
+p.image { text-align:center; margin-left:50px; }
+a:link { color:#448; font-weight:bolder; text-decoration:none; }
+a:visited { color:#446; font-weight:bolder; text-decoration:none; }
+</style>
+</head>
+
+<body>
+<h1 class="title">FoE</h1>
+<pre class="prompt">&gt;{Mt,clb,tk,rlb}=readtable("FoE.txt",&gt;clabs,&gt;rlabs);
+&gt;Mt:=Mt'; writetable((Mt_(Mt[1]/Mt[2]))',labc=clb+"Prod/m^2",labr=rlb)
+</pre>
+<pre class="output">                Prod      Area    Bevölk      Gold    Vorrat  Prod/m^2
+   Küferei       490        12       164     57340     10152     40.83
+  Brauerei       400         9       136     52640      8930     44.44
+ Alchemist       180         6        40     14100      2914        30
+ Bauernhof       730        20       269     60160      5264      36.5
+  Schuster       210         9        77     11374      1410     23.33
+</pre>
+<pre class="prompt">&gt;A:=Mt[2:5];
+&gt;c:=Mt[1];
+&gt;b:=[148,4000,1e6,1e6]';
+&gt;x:=intsimplex(A,b,c,&gt;max);
+&gt;Ist:=[5,5,0,2,0]'; shortest((x|Ist)')
+</pre>
+<pre class="output">        1        15         0         0         0 
+        5         5         0         2         0 
+</pre>
+<pre class="prompt">&gt;c.(x|Ist)
+</pre>
+<pre class="output">[6490,  5910]
+</pre>
+<pre class="prompt">&gt;tmp:=Mt.(x|Ist)|(0_b)|(Mt.(x|Ist))-(0_b);
+&gt;writetable(tmp,labc=["A.x","A.Ist","b","A.x-b","A.Ist-b"],labr=clb)
+</pre>
+<pre class="output">                 A.x     A.Ist         b     A.x-b   A.Ist-b
+      Prod      6490      5910         0      6490      5910
+      Area       147       145       148        -1        -3
+    Bevölk      2204      2038      4000     -1796     -1962
+      Gold    846940    670220    1e+006   -153060   -329780
+    Vorrat    144102    105938    1e+006   -855898   -894062
+</pre>
+</body>
+</html>

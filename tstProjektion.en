@@ -1,0 +1,40 @@
+﻿>load "N:\2-vd\BereichVD\Mitarbeitende\_MA-sck\Euler Files\Geodaesie.e";
+>{Lambda,fi,mu,lv}:=YXLaFi(613149.345,263396.61); Lambda, fi, mu, (1-lv)*1e6
+7.614196018312411
+47.52256755081283
+0.1276108773715728
+-49.3862695343239
+>
+>
+>longestformat;
+>{Laenge,Breite}=YXLaFi(613149.345,263396.61); Laenge, Breite
+7.614196018312411
+47.52256755081283
+>{y,x}=LaFiYX(Laenge,Breite); y, x
+613149.3450000009
+263396.6099995609
+>{Laenge,Breite}=YXLaFi(y,x); Laenge, Breite
+7.614196018312411
+47.52256755080887
+>{y,x}=LaFiYX(Laenge,Breite); y, x
+613149.345000002
+263396.6099991187
+>{Laenge,Breite}=YXLaFi(y,x); Laenge, Breite
+7.614196018312411
+47.52256755080489
+>{y,x}=LaFiYX(Laenge,Breite); y, x
+613149.3450000029
+263396.6099986779
+>{Laenge,Breite}=YXLaFi(y,x); Laenge, Breite
+7.614196018312411
+47.52256755080095
+>{y,x}=LaFiYX(Laenge,Breite); y, x
+613149.3450000039
+263396.6099982377
+>{Laenge,Breite}=YXLaFi(y,x); Laenge, Breite
+7.614196018312411
+47.52256755079698
+>{y,x}=LaFiYX(Laenge,Breite); y, x
+613149.3450000049
+263396.6099977954
+>

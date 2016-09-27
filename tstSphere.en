@@ -1,0 +1,96 @@
+﻿% Geometry on the Earth
+% 
+% by R. Grothmann
+% 
+% In this notebook, we want to do some spherical computations. The
+% functions are contained in the file "spherical.e" in the examples
+% folder. We need to load that file first.
+>load "spherical.e"
+Spherical functions for Euler. 
+>BS=[rad(47,30),rad(7,30)]; ZH=[rad(47.456648),rad(8.553801)]; NY=[rad(40,41,24),rad(-74,-10,-42)]; UT=[rad(5,11,14),rad(-74,-28,-50)]; SJ=[rad(9.927128),rad(-84.082012)];
+>sposprint(BS), sposprint(ZH), sposprint(NY), sposprint(UT), sposprint(SJ)
+N 47°30.000' E 7°30.000'
+N 47°27.399' E 8°33.228'
+N 40°41.400' W 74°10.700'
+N 5°11.233' W 74°28.833'
+N 9°55.628' W 84°4.921'
+% There is also a function for the heading, taking the eplliptical
+% shape of the earth into account. Again, we print in an advanced
+% way.
+>sdegprint(esdir(ZH,NY)), sdegprint(esdir(NY,ZH)), skmprint(esdist(ZH,NY))
+    296.20°
+     53.14°
+  6330.621km
+>sdegprint(esdir(NY,UT)), sdegprint(esdir(UT,NY)), skmprint(esdist(NY,UT))
+    180.52°
+      0.39°
+  3949.409km
+>sdegprint(esdir(UT,SJ)), sdegprint(esdir(SJ,UT)), skmprint(esdist(UT,SJ))
+    297.05°
+    115.78°
+  1183.278km
+>sdegprint(esdir(SJ,ZH)), sdegprint(esdir(ZH,SJ)), skmprint(esdist(SJ,ZH))
+     42.73°
+    278.66°
+  9394.020km
+% The angle of a triangle exceeds 180° on the sphere.
+>asum=sangle(NY,ZH,UT)+sangle(ZH,NY,UT)+sangle(NY,UT,ZH); deg(asum)
+197.5408493915
+% We can also add vectors to positions. A vector contains the heading
+% and the distance, both in radians. To geet a vector, we use svector.
+% To add a vector to a position, we use saddvector.
+>v=svector(ZH,NY); sposprint(saddvector(ZH,v)), sposprint(NY),
+N 40°41.400' W 74°10.700'
+N 40°41.400' W 74°10.700'
+% The same on the earth.
+>sposprint(esadd(ZH,esdir(ZH,NY),esdist(ZH,NY))), sposprint(NY),
+N 40°41.401' W 74°10.698'
+N 40°41.400' W 74°10.700'
+% Now we add 10 times one-tenth of the distance using the heading
+% to our destination we got at our starting point.
+>p=ZH; loop 1 to 10; p=esadd(p,esdir(ZH,NY),esdist(ZH,NY)/10); end;
+% The result is far off.
+>sposprint(NY), sposprint(p), skmprint(esdist(p,NY))
+N 40°41.400' W 74°10.700'
+N 68°37.130' W 96°20.823'
+  3369.480km
+% We get a far better approximation, if we adjust our heading after
+% each 1/100 of the total distance.
+>p=ZH; loop 1 to 100; p=esadd(p,esdir(p,NY),esdist(ZH,NY)/100); end;
+>skmprint(esdist(p,NY))
+     1.952km
+% For navigational purposes, we can easily print a sequence of GPS
+% position to follow along the great circle to our destinatiom
+>loop 0 to 10; sposprint(esadd(ZH,esdir(ZH,NY),#*esdist(ZH,NY)/10)), end;
+N 47°27.399' E 8°33.228'
+N 49°42.519' E 0°38.184'
+N 51°22.404' W 7°56.696'
+N 52°22.229' W 17°2.309'
+N 52°38.706' W 26°23.776'
+N 52°10.876' W 35°42.779'
+N 51°0.371' W 44°41.556'
+N 49°10.977' W 53°6.614'
+N 46°47.766' W 60°50.457'
+N 43°56.187' W 67°51.151'
+N 40°41.401' W 74°10.698'
+% We can also plot everything. First, generate a sequence of points.
+>v1=zeros(0,2); loop 0 to 10; v1=v1_esadd(ZH,esdir(ZH,NY),#*esdist(ZH,NY)/10); end;
+>v2=zeros(0,2); loop 0 to 10; v2=v2_esadd(NY,esdir(NY,UT),#*esdist(NY,UT)/10); end;
+>v3=zeros(0,2); loop 0 to 10; v3=v3_esadd(UT,esdir(UT,SJ),#*esdist(UT,SJ)/10); end;
+>v4=zeros(0,2); loop 0 to 10; v4=v4_esadd(SJ,esdir(SJ,ZH),#*esdist(SJ,ZH)/10); end;
+% Then write a function, which plots the earth, the two positions,
+% and the positions in between.
+>function testplot ...
+$useglobal;
+$plotearth;
+$plotpos(ZH,"Zürich"); plotpos(NY,"New York");
+$plotpos(UT,"Utica"); plotpos(SJ,"San José");
+$plotposline(v1); plotposline(v2); plotposline(v3); plotposline(v4);
+$endfunction
+% Now plot everything.
+>plot3d("testplot",own=1,user=1,square=1, zoom=4); insimg;
+% Or use plot3d to turn an anglyph view of it. This looks really
+% great with red/cyan glasses.
+>plot3d("testplot",own=1,user=1,anaglyph=1,zoom=4);
+
+>

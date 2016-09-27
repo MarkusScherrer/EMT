@@ -1,0 +1,28 @@
+﻿>{Mt,clb,tk,rlb}=readtable("FoE.txt",>clabs,>rlabs);
+>Mt:=Mt'; writetable((Mt_(Mt[1]/Mt[2]))',wc=12,labc=clb+"Prod/m^2",labr=rlb)
+                    Prod        Area      Bevölk        Gold      Vorrat    Prod/m^2
+   Uhrmacher         320           6          68       39990        6882       53.33
+  Tabakplant         900          16         385       75330       14601       56.25
+ Segelmacher         470           9         147       54870        7161       52.22
+     Küferei         490          12         164       56730       10044       40.83
+    Brauerei         400           9         136       52080        8835       44.44
+   Alchemist         180           6          40       13950        2883          30
+   Bauernhof         730          20         269       59520        5208        36.5
+>A:=Mt[2:5];
+>c:=Mt[1];
+>b:=[5+12,190,1624040,273648]';
+>{x,r}:=intsimplex(A,b,c,>max);
+>Ist:=[6,0,0,0,0]'; shortest(x'_Ist')
+        0         0         1         0         0         1         0 
+        6         0         0         0         0         0         0 
+>c.(x|Ist)
+[650,  1920]
+>tmp:=Mt.(x|Ist)|(0_b)|(Mt.(x|Ist))-(0_b);
+>writetable(tmp,labc=["A.x","A.Ist","b","A.x-b","A.Ist-b"],labr=clb)
+                 A.x     A.Ist         b     A.x-b   A.Ist-b
+      Prod       650      1920         0       650      1920
+      Area        15        36        17        -2        19
+    Bevölk       187       408       190        -3       218
+      Gold     68820    2399401.62404e+006-1.55522e+006-1.3841e+006
+    Vorrat     10044     41292    273648   -263604   -232356
+>

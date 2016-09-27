@@ -1,0 +1,219 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+<title>The Programming Language of Euler</title>
+<style type="text/css">
+body { 
+	width : 700px; 
+	font-family: arial, sans-serif; 
+	font-size: 10pt; 
+	margin: 20px; 
+	margin-left: 100px; 
+}
+pre { 
+	font-family : "Courier New", monospace; 
+	background: #EEE; 
+	padding: 10px; 
+	margin-left: 15%; 
+}
+pre.output { 
+	background:none; 
+	margin-left: 5%; 
+}
+pre.udf { 
+	margin-left: 0; 
+}
+pre.prompt { 
+	margin-left: 0; 
+}
+pre.comment { 
+	background: none; 
+	margin-left: 7%; 
+}
+p.comment { 
+	margin-left: 5%; 
+	margin-right: 5%; 
+}
+p.indentedcomment { 
+	margin-left: 10%; 
+}
+h1.title { 
+	font-family : arial, sans-serif; 
+	text-align : right; 
+	font-size : 24pt; 
+	padding-bottom: 5pt; 
+}
+h1.comment, h1.comment a { 
+	font-family : arial, sans-serif; 
+	text-align : right; 
+	font-size : 16pt; 
+}
+h2.comment, h2.comment a { 
+	font-family : arial, sans-serif; 
+	text-align : right; 
+	font-size : 12pt; 
+}
+h1.title, h1.comment, h2.comment {
+	border-bottom: 2px solid; 	
+}
+ul.comment { 
+	font-family : arial, sans-serif; 
+	font-size : 10pt; 
+	margin-left: 10%; 
+	margin-right: 10%; 
+	padding-left:0; 
+}
+img.euler { }
+p.image { 
+	text-align:center; margin-left:50px; 
+}
+a:link { 
+	font-weight:bolder; 
+	text-decoration:none; 
+}
+a:visited { 
+	font-weight:bolder; 
+	text-decoration:none; 
+}
+</style>
+</head>
+
+<body>
+<h1 class="title">tstSundial</h1>
+<pre class="prompt">&gt;{theta,psi,r}:=polar(1,2,1); r, deg(theta), deg(psi)
+</pre>
+<pre class="output">2.44948974278
+63.4349488229
+24.0948425521
+</pre>
+<pre class="prompt">&gt;{x,y,z}:=rect(theta,psi,r); x, y, z
+</pre>
+<pre class="output">1
+2
+1
+</pre>
+<h1 class="comment"><a name="Berechnungsgrundlagen_Sonnenuhr_Bütschen">Berechnungsgrundlagen Sonnenuhr Bütschen</a></h1>
+<pre class="prompt">&gt;e:=23.44°; Dek7:=deg(asin(sin(e)*sin([-90:30:90]°)))
+</pre>
+<pre class="output">[-23.44,  -20.151,  -11.4723,  0,  11.4723,  20.151,  23.44]
+</pre>
+<pre class="prompt">&gt;phi:= 47.5212°; wa:= 18.9°;
+&gt;function sundial(f=phi,a=-wa°,t,d):= sin(f)*cos(a)*cos(t)*cos(d) ...
+ -sin(a)*sin(t)*cos(d)-cos(f)*cos(a)*sin(d)
+&gt;tst:=sundial(,,15°*[-7:9]',Dek7); ...
+ writetable(tst,labr=[5:21],labc=round(Dek7,2), dc=3,&gt;fixed)
+</pre>
+<pre class="output">              -23.44    -20.15    -11.47         0     11.47     20.15     23.44
+         5    -0.646     0.599    -0.690    -0.196     0.510    -0.703     0.694
+         6    -0.670     0.649    -0.603    -0.006     0.597    -0.652     0.671
+         7    -0.693     0.700    -0.515     0.185     0.685    -0.602     0.648
+         8    -0.715     0.748    -0.433     0.364     0.767    -0.554     0.626
+         9    -0.733     0.789    -0.363     0.517     0.837    -0.513     0.607
+        10    -0.748     0.820    -0.308     0.636     0.892    -0.482     0.593
+        11    -0.757     0.840    -0.274     0.711     0.926    -0.462     0.584
+        12    -0.760     0.847    -0.262     0.738     0.938    -0.455     0.581
+        13    -0.757     0.841    -0.272     0.714     0.928    -0.461     0.583
+        14    -0.748     0.822    -0.306     0.642     0.894    -0.480     0.592
+        15    -0.734     0.791    -0.359     0.526     0.841    -0.511     0.606
+        16    -0.716     0.750    -0.429     0.374     0.772    -0.551     0.625
+        17    -0.694     0.703    -0.510     0.196     0.690    -0.599     0.646
+        18    -0.671     0.652    -0.597     0.006     0.603    -0.649     0.670
+        19    -0.648     0.602    -0.685    -0.185     0.515    -0.700     0.693
+        20    -0.626     0.554    -0.767    -0.364     0.433    -0.748     0.715
+        21    -0.607     0.513    -0.837    -0.517     0.363    -0.789     0.733
+</pre>
+<pre class="udf">&gt;function HorAeq(A,h,f=phi)
+ A=rad(A); h=rad(h);
+ d=asin(-cos(h)*cos(A)*cos(f)+sin(h)*sin(f));
+ t=atan2(cos(h)*cos(A)*sin(f)+sin(h)*cos(f),cos(h)*sin(A));
+ return {deg(t),deg(d)}
+ endfunction
+</pre>
+<pre class="prompt">&gt;load "D:\Euler x64\util\astro.e";
+&gt;now=day(2016,4,21,5,50)
+</pre>
+<pre class="output">5954.74305556
+</pre>
+<pre class="udf">&gt;function Dekli(t=now) ....
+ h=sun(t);
+ return h[2];
+ endfunction
+</pre>
+<pre class="prompt">&gt;{t,d}=HorAeq(-71.1,19,phi); t/15, d
+</pre>
+<pre class="output">-4.23421431932
+1.90749876724
+</pre>
+<pre class="prompt">&gt;t=secant("Dekli(x)-d",day(2017,3,24)), printday(t)
+</pre>
+<pre class="output">6292.77554513
+2017-03-25 06:36:47
+</pre>
+<pre class="prompt">&gt;t=secant("Dekli(x)-d",day(2017,9,20)), printday(t)
+</pre>
+<pre class="output">6469.42449414
+2017-09-17 22:11:16
+</pre>
+<pre class="prompt">&gt;A:=[50,75.5,90,165,177,189,221,239,253,266,286.5,311,323]-180;
+&gt;H:=[643,599,608,729,712,679,677,706,790,626,664,766,754]-503;
+&gt;Dist:=[531,341,258.5,631,699,786,1510,1400,2410,1150,1070,1600,1570];
+&gt;h:=deg(atan(H/Dist));
+&gt;{t,d}=HorAeq(A,h,phi);
+&gt;writetable((A_Dist_H_h_t/15_d)',labc=["Azi°","Dist","DH","h°","t[h]","d[°]"])
+</pre>
+<pre class="output">      Azi°      Dist        DH        h°      t[h]      d[°]
+      -130       531       140     14.77     -7.41     37.43
+    -104.5       341        96     15.72     -5.98     21.26
+       -90     258.5       105     22.11     -4.98     16.11
+       -15       631       226     19.71     -1.01    -21.43
+        -3       699       209     16.65     -0.21    -25.78
+         9       786       176     12.62      0.67    -29.32
+        41      1510       174      6.57      3.06    -24.95
+        59      1400       203      8.25      4.06    -13.79
+        73      2410       287      6.79      4.85     -6.25
+        86      1150       123       6.1      5.53      1.81
+     106.5      1070       161      8.56      6.43     17.42
+       131      1600       263      9.33      7.75     33.84
+       143      1570       251      9.08      8.58     40.47
+</pre>
+<pre class="udf">&gt;function ZifferblattMatrix(f=phi,wa=wa,i=0°)
+ Z=zeros(3,3);
+ Z[1,1]=sin(f)*sin(wa); Z[1,2]=-cos(wa); Z[1,3]=-cos(f)*sin(wa);
+ Z[2,1]=cos(f)*cos(i)-sin(f)*cos(wa)*sin(i); Z[2,2]=-sin(wa)*sin(i); Z[2,3]=cos(f)*cos(wa)*sin(i)+sin(f)*cos(i);
+ $Z[3,1]=cos(f)*sin(i)+sin(f)*cos(wa)*cos(i); Z[3,2]=sin(wa)*cos(i); Z[3,3]=-cos(f)*cos(wa)*cos(i)+sin(f)*sin(i);
+ $return Z
+ endfunction
+</pre>
+<pre class="udf">&gt;function Sonnenvektor(tau,delta)
+ s=zeros(3);
+ s[1]=cos(delta)*cos(tau); s[2]=cos(delta)*sin(tau); s[3]=sin(delta);
+ return s'
+ endfunction
+</pre>
+<pre class="prompt">&gt;D:=ZifferblattMatrix(,,)
+</pre>
+<pre class="output">     0.238898     -0.946085     -0.218747 
+     0.675317             0      0.737527 
+     0.697764      0.323917     -0.638908 
+</pre>
+<pre class="prompt">&gt;PL=20*cos(phi); z:=D.(cos(d°)*cos(t°)_cos(d°)*sin(t°)_sin(d°)); (-PL/z[3]*z[1:2])'
+</pre>
+<pre class="output">      8.14755       4.15874 
+      20.4835       6.90737 
+      39.4488       16.9368 
+     -9.07589      -5.82817 
+     -5.42952      -4.35247 
+     -2.35723      -3.07004 
+      5.48436      -1.67978 
+      11.3734      -2.56029 
+      18.6583      -2.74302 
+       31.974      -3.71242 
+      322.252      -48.5309 
+     -33.2621       5.90102 
+     -19.9488       3.85149 
+</pre>
+<pre class="prompt">&gt;plot2d((-PL/z[3]*z[1:2])',&gt;points)
+</pre>
+</body>
+</html>

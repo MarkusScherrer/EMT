@@ -1,0 +1,8 @@
+Prod,Area,Bevölk,Gold,Vorrat
+Uhrmacher,320,6,68,39990,6882
+Tabakplant,900,16,385,75330,14601
+Segelmacher,470,9,147,54870,7161
+Küferei,490,12,164,56730,10044
+Brauerei,400,9,136,52080,8835
+Alchemist,180,6,40,13950,2883
+Bauernhof,730,20,269,59520,5208

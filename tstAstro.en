@@ -1,0 +1,143 @@
+﻿% * Grundlagen
+>load "astro.e";
+>now=day(2016,4,21,5,50)
+5954.74305556
+>printday(now), getymdhms(now)
+2016-04-21 05:50:00
+[2016,  4,  21,  5,  50,  0]
+>locMünchenstein
+[7.61322,  47.5212,  335.78]
+>here=[locMünchenstein,20,1013];
+>sun(now)
+[29.4026,  12.0136,  1.005]
+>raltaz(now,here,sun(now))
+[85.7666,  12.5583]
+% * Sonnenauf- und untergänge
+>function SunAz(t=now,loc=here) ....
+$h=raltaz(t,loc,sun(t));
+$return h[1];
+$endfunction
+>function SunAlt(t=now,loc=here)...
+$h=raltaz(t,loc,sun(t));
+$$return h[2];
+$endfunction
+>SunAz(), SunAz(day(2016,3,25,11,35.6))
+85.766605914
+180.077161616
+>printday(rise("sun",now,here)), printday(set("sun",now,here))
+2016-04-22 04:29:18
+2016-04-21 18:26:08
+>plot2d("SunAzmap(daymap(2016,6,21,x))",a=3.5,b=19.5,color=2, grid=3);
+>plot2d("SunAzmap(daymap(2016,3,21,x))",color=3,add=1);
+>plot2d("SunAzmap(daymap(2016,12,21,x))",color=12,add=1);
+>plot2d("SunAzmap(daymap(2016,9,23,x))",color=4,add=1);
+>xgrid(0:1:24); ygrid([60:30:300]); ygrid([103,283],color=1); ygrid([54,126,234,306],color=2); insimg(40);
+ %image% tstAstro-001.png
+>plot2d("SunAltmap(daymap(2016,6,21,x))",a=3.5,b=19.5,c=-15,d=75,color=2,grid=1);
+>plot2d("SunAltmap(daymap(2016,3,21,x))",color=3,add=1);
+>plot2d("SunAltmap(daymap(2016,9,23,x))",color=4,add=1);
+>plot2d("SunAltmap(daymap(2016,12,21,x))",color=12,add=1);
+>xgrid(0:1:24); ygrid([-10:10:60]); ygrid([19,42.5,66],color=2); insimg(40);
+ %image% tstAstro-002.png
+% Auf- und Untergänge über Zeitintervall (zZ deaktiviert!)
+>..s=day(2016,1,1):1:day(2016,12,31); l=ones([2,cols(s)]); for i=1 to cols(s); l[1,i]:=rise("sun",s[i],here); end;
+>..for i=1 to cols(s); l[2,i]:=set("sun",s[i],here); end;
+>..raltaz(l[1,-1],here,sun(l[1,-1])), raltaz(l[2,-1],here,sun(l[2,-1]))
+>..rA=(l[1]_SunAzmap(l[1])_l[2]_SunAzmap(l[2]))';
+>..writematrix(rA,"riseAzi.txt");
+>{MT,hd}=readtable("riseAzi.txt"); writetable(MT[1:8],dc=5,wc=15,fixed=[1,0,1,0],labc=["tRise","AziRise","tSet","AziSet"]);
+          tRise        AziRise           tSet         AziSet
+     5114.80517         124.47     5115.15823        235.584
+     5115.80512        124.314     5116.15894        235.744
+     5116.80504        124.147     5117.15966        235.916
+     5117.80492        123.967     5118.16042          236.1
+     5118.80477        123.775     5119.16119        236.296
+     5119.80459        123.572     5120.16199        236.504
+     5120.80437        123.357     5121.16281        236.723
+     5121.80412         123.13     5122.16364        236.955
+% Erstellen von Planetentabellen
+>function SunPos(t1,t2,inc)...
+$global here
+$c=1;
+$suntab=zeros([(t2-t1)/inc,3]);
+$for t=t1 to t2 step inc;
+$pos=raltaz(t,here,sun(t));
+$suntab(c,1)=t; suntab(c,2)=pos(1); suntab(c,3)=pos(2);
+$c=c+1;
+$end;
+$return suntab
+$endfunction
+% * Vertikale Sonnenuhr
+% Berechnungselemente, Besonnungsdauer und Streiflicht
+>t=secant("SunAz(day(2016,4,20,x))-283",17,19); hmsprint(t), raltaz(day(2016,4,20,t),here,sun(day(2016,4,20,t)))
+17:55:35
+[283,  4.35835]
+>t=secant("SunAz(day(2016,4,20,x))-103",6,9); hmsprint(t), raltaz(day(2016,4,20,t),here,sun(day(2016,4,20,t)))
+07:19:36
+[103,  27.2867]
+% Streiflichtberechnung
+>d=day(2016,2,22,6):1:day(2016,10,19,6);
+>l=ones([2,cols(d)]); for i=1 to cols(d); t=secant("SunAz(x,here)-103",d[i]); l[1,i]=t; l[2,i]=raltaz(t,here,sun(t))[2]; end;
+>writematrix(l',"Streiflicht.txt");
+>{MT,hd}=readtable("Streiflicht.txt"); writetable(MT[1:5],dc=5,wc=15,fixed=[1,0],labc=["day","Höhe"]);
+            day           Höhe
+     5896.76180       -1.00376
+     5897.76263       -0.56444
+     5898.76346       -0.14822
+     5899.76428        0.27062
+     5900.76511        0.70202
+>printday(MT[1,1]), printday(MT[-1,1])
+2016-02-23 06:16:59
+2016-10-19 05:48:01
+% geogr. Breite, Länge und Wandabweichung (West)
+>phi=47.5212; la=-7.61322; wa=13.55;
+% Erhebungs- und Substilarwinkel, Hilfsstundenwinkel
+>g=dasin(dcos(phi)*dcos(wa)), f=datan(dsin(wa)/dtan(phi)), t0=datan(dsin(phi)/dtan(wa))
+41.035040359
+12.1082102207
+71.9041517919
+% Deklination bei Sonnenauf bzw. -untergang in Wandflucht
+>del0:=asin(dsin(wa)*dcos(phi)); degprint(del0)
+9°6'13.50''
+% Komponenten des Schattenstabs
+>{x,y,z}=rect(rad(f),rad(g),1); format(8,3); [0.2,0.25,0.5,1]'*[x,y,z], longformat;
+  0.148   0.032   0.131 
+  0.184   0.040   0.164 
+  0.369   0.079   0.328 
+  0.738   0.158   0.657 
+>function bd(dekli, wa=wa) ...
+$global phi;
+$if wa==0 then break else
+$t0=datan(dsin(phi)/dtan(wa));
+$g=dasin(dcos(phi)*dcos(wa));
+$return mod(t0+dasin(dtan(g)*dtan(dekli)),360);
+$endif;
+$endfunction
+>tmp:=(bd(-23.44)_bd(0)_bd(23.44))'
+[49.7338718293,  71.9041517919,  94.0744317545]
+>bd(-23.44)
+49.7338718293
+>plot2d("bdmap(x,[10:10:50]')", -23.44, 23.44);
+>plot2d("bd",add=1,color=2,thickness=2); xgrid([-35:5:35]); ygrid([0:15:90]); insimg(30);
+ %image% tstAstro-003.png
+% * Analemma (Deklination / Zeitgleichung)
+>t=day(2016,1,1):1:day(2016,12,31); ...
+>l=ones([2,cols(t)]); for i=1 to cols(t); hi:=sun(t[i]); l[1,i]:=hi[2]; l[2,i]:=(-hi[1]+gst(t[i])); end; ...
+>l[2]:=(mod(l[2],360)-180)/15*60; writematrix((t_l)',"Analemma.txt");
+>aspect(0.5); plot2d(l[2],l[1],a=-15,b=17,c=-25,d=25,xl="Zeitgleichung [min]", yl="Dekl. [°]",>points,style=".",grid=0,>vertical);  ...
+>frame; xgrid(-15:5:15); ygrid(-25:5:25);...
+>h:=ones([1,12]); for m=1 to 12; h[m]:=day(2016,m,21); end; ...
+>h[9]:=h[9]+2; ...
+>L=ones([2,cols(h)]); for i=1 to cols(h); hi:=sun(h[i]); L[1,i]:=hi[2]; L[2,i]:=(-hi[1]+gst(h[i])); end; ...
+>L[2]:=(mod(L[2],360)-180)/15*60;
+>plot2d(L[2],L[1], points=1, style="<>", add=1);
+>h:=ones([1,12]); for m=1 to 12; h[m]:=day(2016,m,1); end; ...
+>L=ones([2,cols(h)]); for i=1 to cols(h); hi:=sun(h[i]); L[1,i]:=hi[2]; L[2,i]:=(-hi[1]+gst(h[i])); end; ...
+>L[2]:=(mod(L[2],360)-180)/15*60;
+>plot2d(L[2],L[1], points=1, style="*", add=1);
+>h:=ones([1,12]); for m=1 to 12; h[m]:=day(2016,m,11); end; ...
+>L=ones([2,cols(h)]); for i=1 to cols(h); hi:=sun(h[i]); L[1,i]:=hi[2]; L[2,i]:=(-hi[1]+gst(h[i])); end; ...
+>L[2]:=(mod(L[2],360)-180)/15*60;
+>plot2d(L[2],L[1], points=1, style="o", add=1,); insimg; aspect();
+ %image% tstAstro-004.png
+>

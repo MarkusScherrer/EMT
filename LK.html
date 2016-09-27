@@ -1,0 +1,368 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+<title>The Programming Language of Euler</title>
+<style type="text/css">
+body { 
+	width : 700px; 
+	font-family: arial, sans-serif; 
+	font-size: 10pt; 
+	margin: 20px; 
+	margin-left: 100px; 
+}
+pre { 
+	font-family : "Courier New", monospace; 
+	background: #EEE; 
+	padding: 10px; 
+	margin-left: 15%; 
+}
+pre.output { 
+	color: #000; 
+	background:none; 
+	margin-left: 5%; 
+}
+pre.udf { 
+	color : #006; 
+	margin-left: 0; 
+}
+pre.prompt { 
+	color : #700; 
+	margin-left: 0; 
+}
+pre.comment { 
+	color : #040; 
+	background: none; 
+	margin-left: 7%; 
+}
+p.comment { 
+	color : #040; 
+	margin-left: 5%; 
+	margin-right: 5%; 
+}
+p.indentedcomment { 
+	color : #040; 
+	margin-left: 10%; 
+}
+h1.title { 
+	font-family : arial, sans-serif; 
+	text-align : right; 
+	font-size : 24pt; 
+	padding-bottom: 5pt; 
+}
+h1.comment, h1.comment a { 
+	font-family : arial, sans-serif; 
+	text-align : right; 
+	font-size : 16pt; 
+	color : #000; 
+}
+h2.comment, h2.comment a { 
+	font-family : arial, sans-serif; 
+	text-align : right; 
+	font-size : 12pt; 
+	color : #000; 
+}
+h1.title, h1.comment, h2.comment {
+	border-bottom: 2px solid #e9b06e; 	
+}
+ul.comment { 
+	font-family : arial, sans-serif; 
+	font-size : 10pt; 
+	color : #040; 
+	margin-left: 10%; 
+	margin-right: 10%; 
+	padding-left:0; 
+}
+img.euler { }
+p.image { 
+	text-align:center; margin-left:50px; 
+}
+a:link { 
+	color:#448; 
+	font-weight:bolder; 
+	text-decoration:none; 
+}
+a:visited { 
+	color:#446; 
+	font-weight:bolder; 
+	text-decoration:none; 
+}
+</style>
+</head>
+
+<body>
+<h1 class="title">LK</h1>
+<pre class="prompt">&gt;{Mt,clb,tk,rlb}=readtable("ABC.txt",&gt;clabs,&gt;rlabs);
+&gt;writetable(Mt,labc=clb,labr=rlb)
+</pre>
+<pre class="output">                  ST        SK        BS        AS        PR        LR
+     McKay         0         0         0         0       971       989
+    IchIch         0         0         0         0       960       867
+     Bonny         0         0         0         0       988       909
+MacGreggor       220       500       500       700       250       750
+ MacKenzie       100       600       600       300       200      1000
+ MacDonald       720       210       205       700       650       300
+</pre>
+<pre class="prompt">&gt;At:=10*[0,359,10,0,0,0], Df:=Mt[1]
+</pre>
+<pre class="output">[0,  3590,  100,  0,  0,  0]
+[0,  0,  0,  0,  971,  989]
+</pre>
+<pre class="prompt">&gt;load "D:\Euler\Euler Files\LK.e";
+</pre>
+<h1 class="comment"><a name="Grundlagen">Grundlagen</a></h1>
+<pre class="prompt">&gt;writetable(Off|Def,wc=9,dc=0,&gt;fixed,labc=lSK,labr=lTR)
+</pre>
+<pre class="output">                oI       oA       oK       dI       dA       dK
+       ST        7        5       13       69       44      129
+       SK       43       26       62       55       28       83
+       BS       66       22       11       69       32       23
+       AS       23       16       10      201      132       72
+       PR       16       26       23       60      132       81
+       LR       36      109       62       28       55       34
+</pre>
+<pre class="prompt">&gt;A:=Off[[2,3,6]]'; writetable(1000*(inv(A)_inv(Def[[1,4,5]])'),wc=9, ...
+ dc=2,&gt;fixed,labc=lKL,labr=lTR[[2,3,6,1,4,5]]);
+</pre>
+<pre class="output">                 I        A        K
+       SK     0.54   -12.00    20.79
+       BS    16.71     1.41   -12.18
+       LR    -3.50    11.75    -2.50
+       ST     0.61    -6.11     9.51
+       AS     6.88    -1.10    -3.31
+       PR    -7.08    10.71     0.13
+</pre>
+<pre class="prompt">&gt;writetable(A'|sum(A')_(sum(A)'|sum(sum(A')')),labc=lKL+"sum",labr=lTR[[2,3,6]]+"sum")
+</pre>
+<pre class="output">                   I         A         K       sum
+        SK        43        26        62       131
+        BS        66        22        11        99
+        LR        36       109        62       207
+       sum       145       157       135       437
+</pre>
+<pre class="prompt">&gt;P&amp;:=P2; P[4,3]:=P1[4,3]; P&amp;:=P;
+&gt;writetable(P',labc=lTR,labr=lTR[[2,3,6]])
+</pre>
+<pre class="output">                  ST        SK        BS        AS        PR        LR
+        SK         0         0         0         0       1.4      0.65
+        BS         2      1.27         0         0         0         0
+        LR         0         0      0.37      1.21         0         0
+</pre>
+<p class="comment">Varianten
+</p>
+<pre class="prompt">&gt;x1:=sum(Df.Def+1000)/sum((Df.P).A')*(Df.P)';
+&gt;rD:=Df.Def+1000; b:=rD'; x:=A\b;
+&gt;c0:=rD; c1:=ones(3); c2:=sum(Kos[[2:3]]_Kos[6])'; c3:=Df.P/sum(Df.P); c4:=[1,1,2]*c0;
+&gt;startlpsolve; c:=c0;
+&gt;{x2,obj,duals}:=ilpsolve(A,b,c,eq=1);
+&gt;X:=x1|x|x2; Xpro:=(X'/sum(X'))'; X:=8*ceil(X/8); writetable(Xpro',labr=["P.Df", ...
+ "Ax=b","min(x)"],labc=lTR[[2,3,6]]);
+</pre>
+<pre class="output">                  SK        BS        LR
+      P.Df         1         0         0
+      Ax=b      0.09      0.16      0.75
+    min(x)      0.34         0      0.66
+</pre>
+<h1 class="comment"><a name="Variantenvergleich">Variantenvergleich</a></h1>
+<pre class="prompt">&gt;sol:=(X_zeros([3,3]))'.U';
+</pre>
+<p class="comment">Ausgangsdisposition
+</p>
+<pre class="prompt">&gt;{rA,rD,key,vA}:=bat(,);
+</pre>
+<pre class="output">                           I             A             K           sum
+             x          3590           100             0          3690
+          loss          1940           100             0          2040
+            rA        160970         95540        223680        480190
+            rD         86952        183567        113277        383796
+         rA-rD         74018        -88027        110403         96394
+         rA/rD          0.54          1.92          0.51          2.97
+         rD/rA          1.85          0.52          1.97          4.35
+</pre>
+<p class="comment">x=P.Df
+</p>
+<pre class="prompt">&gt;{rA,rD,key,vA}:=bat(sol[1],);
+</pre>
+<pre class="output">                           I             A             K           sum
+             x          2936             0             0          2936
+          loss          2023             0             0          2023
+            rA        126248         76336        182032        384616
+            rD         86952        183567        113277        383796
+         rA-rD         39296       -107231         68755           820
+         rA/rD          0.69           2.4          0.62          3.72
+         rD/rA          1.45          0.42          1.61          3.47
+</pre>
+<p class="comment">x=A\b
+</p>
+<pre class="prompt">&gt;{rA,rD,key,vA}:=bat(sol[2],);
+</pre>
+<pre class="output">                           I             A             K           sum
+             x           200           336          1576          2112
+          loss           199           335          1569          2103
+            rA         87512        184376        113808        385696
+            rD         86952        183567        113277        383796
+         rA-rD           560           809           531          1900
+         rA/rD          0.99             1             1          2.98
+         rD/rA          1.01             1             1          3.02
+</pre>
+<p class="comment">x=simplex(A,b,c)
+</p>
+<pre class="prompt">&gt;{rA,rD,key,vA}:=bat(sol[3],);
+</pre>
+<pre class="output">                           I             A             K           sum
+             x           768             0          1504          2272
+          loss           767             0          1210          1977
+            rA         87168        183904        140864        411936
+            rD         86952        183567        113277        383796
+         rA-rD           216           337         27587         28140
+         rA/rD             1             1           0.8           2.8
+         rD/rA             1             1          1.24          3.25
+</pre>
+<h1 class="comment"><a name="Runden">Runden</a></h1>
+<pre class="prompt">&gt;{o,d}:=fight(,);
+</pre>
+<pre class="output">     Rnd      ST      SK      BS      AS      PR      LR     Sum
+       0       0    3590     100       0       0       0    3690
+       1       0    2620      50       0       0       0    2670
+       2       0    2123      25       0       0       0    2148
+       3       0    1866      14       0       0       0    1880
+       4       0    1731      10       0       0       0    1741
+       5       0    1658       8       0       0       0    1666
+       6       0    1615       7       0       0       0    1622
+
+     Rnd      ST      SK      BS      AS      PR      LR     Sum
+       0       0       0       0       0     971     989    1960
+       1       0       0       0       0     485     494     979
+       2       0       0       0       0     242     247     489
+       3       0       0       0       0     121     123     244
+       4       0       0       0       0      60      61     121
+       5       0       0       0       0      30      30      60
+       6       0       0       0       0      15      15      30
+</pre>
+<p class="comment">x1=P.Df
+</p>
+<pre class="prompt">&gt;{o,d}:=fight(sol[1],);
+</pre>
+<pre class="output">     Rnd      ST      SK      BS      AS      PR      LR     Sum
+       0       0    2936       0       0       0       0    2936
+       1       0    1924       0       0       0       0    1924
+       2       0    1413       0       0       0       0    1413
+       3       0    1152       0       0       0       0    1152
+       4       0    1015       0       0       0       0    1015
+       5       0     941       0       0       0       0     941
+       6       0     898       0       0       0       0     898
+
+     Rnd      ST      SK      BS      AS      PR      LR     Sum
+       0       0       0       0       0     971     989    1960
+       1       0       0       0       0     485     494     979
+       2       0       0       0       0     242     247     489
+       3       0       0       0       0     121     123     244
+       4       0       0       0       0      60      61     121
+       5       0       0       0       0      30      30      60
+       6       0       0       0       0      15      15      30
+</pre>
+<pre class="prompt">&gt;plot2d([0:rows(o)-1],o',color=blue); plot2d([0:rows(d)-1],d',style="-.-",&gt;add);
+</pre>
+<p class="comment">x2=A\b
+</p>
+<pre class="prompt">&gt;{o,d}:=fight(sol[2],);
+</pre>
+<pre class="output">     Rnd      ST      SK      BS      AS      PR      LR     Sum
+       0       0     200     336       0       0    1576    2112
+       1       0     100     168       0       0     791    1059
+       2       0      50      84       0       0     395     529
+       3       0      25      42       0       0     197     264
+       4       0      12      21       0       0      98     131
+       5       0       6      10       0       0      49      65
+       6       0       3       5       0       0      24      32
+
+     Rnd      ST      SK      BS      AS      PR      LR     Sum
+       0       0       0       0       0     971     989    1960
+       1       0       0       0       0     485     494     979
+       2       0       0       0       0     242     247     489
+       3       0       0       0       0     123     125     248
+       4       0       0       0       0      65      66     131
+       5       0       0       0       0      38      38      76
+       6       0       0       0       0      25      25      50
+</pre>
+<pre class="prompt">&gt;plot2d([0:rows(o)-1],o',style=".-.",color=red,&gt;add);
+</pre>
+<p class="comment">x=simplex(A,b,c)
+</p>
+<pre class="prompt">&gt;{o,d}:=fight(sol[3],);
+</pre>
+<pre class="output">     Rnd      ST      SK      BS      AS      PR      LR     Sum
+       0       0     768       0       0       0    1504    2272
+       1       0     384       0       0       0     899    1283
+       2       0     211       0       0       0     576     787
+       3       0     131       0       0       0     404     535
+       4       0      93       0       0       0     312     405
+       5       0      73       0       0       0     262     335
+       6       0      62       0       0       0     233     295
+
+     Rnd      ST      SK      BS      AS      PR      LR     Sum
+       0       0       0       0       0     971     989    1960
+       1       0       0       0       0     485     494     979
+       2       0       0       0       0     242     247     489
+       3       0       0       0       0     121     123     244
+       4       0       0       0       0      60      61     121
+       5       0       0       0       0      30      30      60
+       6       0       0       0       0      15      15      30
+</pre>
+<pre class="prompt">&gt;plot2d([0:rows(o)-1],o',style="-.-",color=green,&gt;add); insimg;
+</pre>
+<p class="image">
+<object data="images/LK-001.svg" type="image/svg+xml" width="448" height="448">
+<img class="euler" src="images/LK-001.png" width="448" height="448" alt="LK" />
+</object>
+</p>
+<pre class="prompt">&gt;writetable(X',labr=["P.Df","Ax=b","min(x)"],labc=lTR[[2,3,6]])
+</pre>
+<pre class="output">                  SK        BS        LR
+      P.Df      2936         0         0
+      Ax=b       200       336      1576
+    min(x)       768         0      1504
+</pre>
+<pre class="prompt">&gt;tmp1:=Mt.P; tmp2:=Mt.Def;
+&gt;writetable(Mt,wc=11,labr=rlb,labc=clb)
+</pre>
+<pre class="output">                    ST         SK         BS         AS         PR         LR
+      McKay          0          0          0          0        971        989
+     IchIch          0          0          0          0        960        867
+      Bonny          0          0          0          0        988        909
+ MacGreggor        220        500        500        700        250        750
+  MacKenzie        100        600        600        300        200       1000
+  MacDonald        720        210        205        700        650        300
+</pre>
+<pre class="prompt">&gt;writetable(tmp2|(tmp2/sum(tmp2)),wc=11,labr=rlb,labc=lKL[[1,2,3,1,2,3]])
+</pre>
+<pre class="output">                     I          A          K          I          A          K
+      McKay      85952     182567     112277       0.23       0.48       0.29
+     IchIch      81876     174405     107238       0.23       0.48       0.29
+      Bonny      84732     180411     110934       0.23       0.48       0.29
+ MacGreggor     253880     206330     177530        0.4       0.32       0.28
+  MacKenzie     181600     161400     148300       0.37       0.33        0.3
+  MacDonald     263475     238820     228275       0.36       0.33       0.31
+</pre>
+<pre class="prompt">&gt;writetable(8*round(tmp1/8,0)|(tmp1/sum(tmp1)),wc=11,labr=rlb,labc=lTR[[2,3,6,2,3,6]])
+</pre>
+<pre class="output">                    SK         BS         LR         SK         BS         LR
+      McKay       2000          0          0          1          0          0
+     IchIch       1904          0          0          1          0          0
+      Bonny       1968          0          0          1          0          0
+ MacGreggor        840       1080       1032       0.28       0.37       0.35
+  MacKenzie        928        960        584       0.38       0.39       0.24
+  MacDonald       1104       1704        920        0.3       0.46       0.25
+</pre>
+<pre class="prompt">&gt;l:=A\tmp2'; writetable(8*round(l'/8,0)|l'/sum(l'),wc=11,labr=rlb,labc=lTR[[2,3,6,2,3,6]])
+</pre>
+<pre class="output">                    SK         BS         LR         SK         BS         LR
+      McKay        192        328       1568       0.09       0.16       0.75
+     IchIch        184        304       1496       0.09       0.16       0.75
+      Bonny        184        320       1544       0.09       0.16       0.75
+ MacGreggor       1352       2368       1096       0.28       0.49       0.23
+  MacKenzie       1240       1456        888       0.35       0.41       0.25
+  MacDonald       2024       1960       1312       0.38       0.37       0.25
+</pre>
+</body>
+</html>

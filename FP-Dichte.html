@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+<title>Darstellung idealisierter Fixpunktdichten</title>
+<style type="text/css">
+body { width : 700px; font-family: arial, sans-serif; font-size: 10pt; margin: 20px; margin-left: 100px; }
+pre { font-family : "Courier New", monospace; background: #EEE; padding: 10px; margin-left: 15%; }
+pre.output { color: #000; background:none; margin-left: 5%; }
+pre.udf { color : #006; margin-left: 0; }
+pre.prompt { color : #700; margin-left: 0; }
+pre.comment { color : #040; background: none; margin-left: 7%; }
+p.comment { color : #040; margin-left: 5%; margin-right: 5%; }
+p.indentedcomment { color : #040; margin-left: 10%; }
+h1.title { font-family : arial, sans-serif; text-align : right; font-size : 24pt; padding-bottom: 5pt; }
+h1.comment, h1.comment a { font-family : arial, sans-serif; text-align : right; font-size : 16pt; color : #000; }
+h1.comment, h2.comment a { font-family : arial, sans-serif; text-align : right; font-size : 12pt; color : #000; }
+h1.title, h1.comment, h2.comment { border-bottom: 2px solid #e9b06e; }
+ul.comment { font-family : arial, sans-serif; font-size : 10pt; color : #040; margin-left: 10%; margin-right: 10%; padding-left:0; }
+img.euler { }
+p.image { text-align:center; margin-left:50px; }
+a:link { color:#448; font-weight:bolder; text-decoration:none; }
+a:visited { color:#446; font-weight:bolder; text-decoration:none; }
+</style>
+</head>
+
+<body>
+<h1 class="title">Darstellung idealisierter Fixpunktdichten</h1>
+<pre class="prompt"> TS2:=randuniform(2,70*k,0,k); ...
+ TS3:=randuniform(2,20*k,0,k); ...
+ TS4:=randuniform(2,10*k,0,k); ...
+ TS5:=randuniform(2,2*k,0,k); ...
+ plot2d(TS1[1]-k,TS1[2],a=-k,b=k,c=-k,d=k,&gt;points,style=".."); ...
+ plot2d(TS2[1],TS2[2],&gt;add,&gt;points,style=".."); ...
+ plot2d(TS3[1],TS3[2]-k,&gt;add,&gt;points,style=".."); ...
+ plot2d(TS4[1]-k,TS4[2]-k,&gt;add,&gt;points,style=".."):
+</pre>
+<p class="image">
+<img class="euler" src="FP-Dichte-001.png" srcset="FP-Dichte-001.png 1x, FP-Dichte-001-large.png 3x" width="400" height="400" alt="FP-Dichte" />
+</p>
+<pre class="prompt">&gt;figure(2,1); ...
+ setplot(0,k,0,0.5); ...
+ figure(1); plot2d(TS1[1],distribution=5*k,&gt;bar); ...
+ figure(2); plot2d(TS1[2],distribution=5*k,&gt;bar); ...
+ figure(0):
+</pre>
+<p class="image">
+<img class="euler" src="FP-Dichte-002.png" srcset="FP-Dichte-002.png 1x, FP-Dichte-002-large.png 3x" width="400" height="400" alt="FP-Dichte" />
+</p>
+<pre class="prompt">&gt;v=0:.25:k; z=find2(TS1[1],TS1[2],v,v); ...
+ columnsplot3d(z,v,v,&gt;positive):
+</pre>
+<p class="image">
+<img class="euler" src="FP-Dichte-003.png" srcset="FP-Dichte-003.png 1x, FP-Dichte-003-large.png 3x" width="400" height="400" alt="FP-Dichte" />
+</p>
+</body>
+</html>

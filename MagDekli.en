@@ -1,0 +1,21 @@
+>load "N:\2-vd\BereichVD\Mitarbeitende\_MA-sck\Euler Files\Geodaesie.e";
+>Y=613149.536; X=263398.2133;
+>{lambda,phi,mu,lv}=YXLaFi(Y,X); lambda, phi
+     7.614198602049 
+     47.52258196848 
+>t=1950:10:2300;
+>plot2d(t,MagDek(t,Y,X));
+>MagDek(2009.5,Y,X)
+    0.9206350636562 
+>mu, (lv-1)*1e6
+    0.1276127659406 
+     49.38876748839 
+>degprint(rad(phi)), degprint(rad(lambda))
+47°31'21.30''
+7°36'51.11''
+>plot3d("MagDek(2010,y,x)",a=480000, b=800000, c=20000, d=340000,user=1); insimg
+ %image% MagDekli-001.png
+                 25 
+>plot2d("MagDek(x,613149.536,263398.2133)",a=1900,b=2100); insimg;
+ %image% MagDekli-002.png
+>

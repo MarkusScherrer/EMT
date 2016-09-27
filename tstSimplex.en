@@ -1,0 +1,321 @@
+﻿% * Optimierung - Beispiele
+% 
+% Wir rechnen einige Beispiele für Optimierung mit dem
+% Simplex-Algorithmus und mit der Hand (unterstützt durch Euler) durch.
+% 
+% Das erste Beispiel besteht aus Kapazitätsbeschränkungen für eine
+% Landwirt, der zwei Feldfrüchte anbauen möchte. Er hat 1000ha Fläche
+% und 4500 Arbeitsstunden zur Verfügung. Das ergibt für ihn die
+% Beschränkungen
+% 
+% latex: x+y \le 1000, \quad 4x+5y \le 4500
+% 
+% Maximieren will er den Gewinn
+% 
+% latex: 5x+6y \to \text{Max.}
+% 
+% Dazu geben wir alles in Matrixform ein.
+>A=[1,1;4,5]
+            1             1 
+            4             5 
+>b=[1000,4500]'
+         1000 
+         4500 
+>c=[5,6]
+[5,  6]
+% Euler kann bei zwei Variablen die Menge der zuläsigen Punkte als
+% Polygon berechnen. Die Nebenbedingung hat dabei die Form
+% 
+% latex: Ax \le b
+>x=feasibleArea(A,b);
+>plot2d(x[1],x[2],filled=true,style="/");
+% Wir starten nun den Simplexalgorithmus, der ohne weitere Angaben das
+% Problem
+% 
+% latex: Ax \le b, \quad x \ge 0
+%% latex: c^T x \to \text{Min.}
+% 
+% löst. Wir setzen das Flag für Maximierung. Das Flag für check erspart
+% uns, den Ergebniscode zu überprüfen.
+>v=simplex(A,b,c,>max,>check)
+          500 
+          500 
+% Nun plotten wir den optimalen Punkt und die Niveaulinie der
+% Zielfunktion.
+>function map f(x,y) := c.[x;y]
+>plot2d("f",niveau=c.v,>add);
+>plot2d(v[1],v[2],points=true,style="ow",>add):
+ %image% tstSimplex-001.png
+% Der Wert der Zielfunktion ist 5500.
+>c.v
+5500
+% Das duale Problem lautet
+% 
+% latex: p_1 + 4p_2 \ge 5, \quad p_2 + 5p_2 \ge 6, \quad p_1,p_2 \ge 0
+%% latex: 1000p_1 + 4500p_2 \to \text{Min.}
+% 
+% Man kann das so deuten, dass der Landwirt sein gesamtes Land und seine
+% gesamte Arbeitskraft zu Preisen p1 bzw. p2 möglichst günstig anbietet,
+% so dass es auf jeden Fall für ihn günstiger wird, als wenn er alles
+% selbst vermarkten würde.
+% 
+% Wir lösen es, wobei wir durch den vierten Parameter eq=1 die
+% Ungleichungen als >= kennzeichnen.
+% 
+>p=simplex(A',c',b',eq=1,>min,>check)
+            1 
+            1 
+>b'.p
+5500
+% Ändert man die Zielfunktion ein wenig ab, so ergibt sich ein Minimum,
+% das die Ressourcen nicht voll ausschöpft.
+>c=[5,7];
+>x=feasibleArea(A,b); ...
+>plot2d(x[1],x[2],filled=true,style="/"); ...
+>v=simplex(A,b,c,>max,>check), ...
+>plot2d("f",niveau=c.v,>add); ...
+>plot2d(v[1],v[2],points=true,style="ow",>add):
+            0 
+          900 
+ %image% tstSimplex-002.png
+% Im dualen Problem erkennt man, dass der Landwirt den Preis so
+% festsetzt, dass die erste Feldfrucht nicht abgerufen wird, da er daran
+% mehr verdienen würde als durch eigene Disposition.
+>p=simplex(A',c',b',eq=1,>min,>check); A'.p-c'
+          0.6 
+            0 
+% 
+% * Ein Transportproblem
+% 
+% Wir lösen das Transportproblem, bei dem aus zwei Lagern zwei
+% Produktionsstätten beliefert werden sollen. Die Menge, die dabei von
+% Lager i nach Ort j geschickt werden, nennen wir c(i,j). Die Kosten
+% seien
+% 
+% latex: 2c_{1,1}+3c_{1,2}+4c_{2,1}+2c_{2,2} \to \text{Min.}
+% 
+% Die zur Verfüngung stehenden Mengen und die benötigten Mengen ergeben
+% Restriktionen
+% 
+% latex: c_{1,1}+c_{1,2} \le 1000, \quad c_{2,1}+c_{2,2} \le 800
+%% latex: c_{1,1}+c_{2,1} \ge 1200, \quad c_{1,2}+c_{2,2} \ge 600
+% 
+% image: Transportproblem.png
+>shortformat;
+% Die Spalten der Matrix entsprechen den Variablen
+% 
+% latex: c_{1,1},c_{1,2},c_{2,1},c_{2,2}
+>A=[1,1,0,0;0,0,1,1;1,0,1,0;0,1,0,1]
+        1         1         0         0 
+        0         0         1         1 
+        1         0         1         0 
+        0         1         0         1 
+>b=[1000,800,1200,600]'
+     1000 
+      800 
+     1200 
+      600 
+% Die Ungleichungen sind zweimal <= und einmal >=.
+>eq=[-1,-1,1,1]'
+       -1 
+       -1 
+        1 
+        1 
+>c=[2,3,4,2]
+[2,  3,  4,  2]
+% Es ergibt sich die Lösung, die auch in Klammern im obigen Bild
+% angedeutet ist.
+>x=simplex(A,b,c,eq=eq,>min,>check)
+     1000 
+        0 
+      200 
+      600 
+% Das duale Problem hat auch hier eine Deutung.
+% 
+% Statt die Lieferung selbst zu machen, verkaufen wir die Ware in den
+% Lagern zu Preisen p1, p2 und kaufen sie wieder zu Preisen q1, q2 ein,
+% wo sie gebraucht wird. Die Differenz der Verkaufspreise darf nicht
+% größer als die Transportkosten sein, also etwa
+% 
+% latex: q_1 - p_1 \le 2
+% 
+% Die Preise gestalten wir so, dass der Vertragsnehmer möglichst viel
+% Gewinn macht.
+% 
+% Der Einfachheit halber schreiben wir alles in Form von <=. Das geht
+% durch Multiplikation von A und b mit -eq.
+>p=simplex(-(eq*A)',c',-(eq*b)',>max,>check)
+        2 
+        4 
+        0 
+        2 
+% Wir erhalten dasselbe Optimum.
+>-(eq*b)'.p, c.x
+4000
+4000
+>shortformat
+% Übungsaufgabe Landwirt:
+%% Ein Landwirtschaftsbetrieb besitzt 90 Ar Land für den Anbau von zwei
+% Gemüsesorten A und B. Das Saatgut A kostet pro Ar 10 € und Sorte B
+% kostet 5 € pro Ar. Maximal möchte der Betrieb für das Saatgut 800 €
+% ausgeben.
+%% Um das Gemüse anzubauen, benötigt der Betrieb für die Sorte A
+% durchschnittlich 3 Stunden, für die Sorte B 6 Stunden, wobei der
+% Betrieb maximal 420 Stunden aufwenden kann.
+%% Wieviel Ar von jeder Sorte sollte der Betrieb anbauen, wenn der
+% Gewinn für Sorte A 36 € und für Sorte B 45 € beträgt, um einen
+% möglichst großen Gesamtgewinn zu machen?
+%% Setze x = Menge Sorte A, y = Menge Sorte B.
+>A:=[1,1;10,5;3,6]; b:=[90;800;420]; c=[36,45];
+>{x,r,i}=simplex(A,b,c,>max); x
+       40 
+       50 
+>v=feasibleArea(A,b);
+>plot2d(v[1],v[2],polygon=1,a=0,b=110,c=0,d=90,filled=1,style="/");
+Argument polygon not in parameter list of function plot2d.
+
+Parameters:
+xv, yv, btest, a, b, c, d, xmin, xmax, r, n, logplot, grid,  ..
+frame, framecolor, square, color, thickness, style, auto,  ..
+add, user, delta, points, addpoints, pointstyle, bar, histogram,  ..
+distribution, even, steps, own, adaptive, hue, level, contour,  ..
+nc, filled, fillcolor, outline, title, xl, yl, maps, contourcolor,  ..
+contourwidth, ticks, margin, clipping, cx, cy, insimg, spectral,  ..
+cgrid, vertical, smaller, dl, niveau, levels
+
+Error in:
+... ,polygon=1,a=0,b=110,c=0,d=90,filled=1,style="/"); ...
+                                                     ^
+>plot2d("-4/5*x+3690/45",add=1,color=12); plot2d(x[1],x[2],>points,>add); insimg;
+ %image% tstSimplex-003.png
+>(c|c.x)_(A|A.x|b)
+       36        45      3690         0 
+        1         1        90        90 
+       10         5       650       800 
+        3         6       420       420 
+% Im Monat benötigt ein Mensch mindestens 600 mg Vitamin B und 300 mg
+% Vitamin H. Um diesen Bedarf durch Medikamente abzudecken, werden zwei
+% verschiedene Sorten A und B angeboten: In einem Gramm der Sorte A
+% sind 30 mg Vitamin B und 10 mg Vitamin H. In Sorte B sind 10 mg
+% Vitamin B und 20 mg Vitamin H enthalten. Sorte A kostet 0,12 € Sorte
+% B 0,08 €.
+%% Wieviel Gramm jeder Sorte muss ein Mensch monatlich zu sich nehmen,
+% um den Bedarf möglichst günstig abzudecken?
+%% Setze: x = Menge Sorte A, y = Menge Sorte B.
+>A:=[30,10;10,20]; b:=[600;300]; c=[.12,.08];
+>{x,r,i}=simplex(A,b,c,1,>min); x
+       18 
+        6 
+>v=feasibleArea(A,b);
+>plot2d(v[1],v[2],polygon=1,a=0,b=30,c=0,d=20,filled=1,style="/");
+Argument polygon not in parameter list of function plot2d.
+
+Parameters:
+xv, yv, btest, a, b, c, d, xmin, xmax, r, n, logplot, grid,  ..
+frame, framecolor, square, color, thickness, style, auto,  ..
+add, user, delta, points, addpoints, pointstyle, bar, histogram,  ..
+distribution, even, steps, own, adaptive, hue, level, contour,  ..
+nc, filled, fillcolor, outline, title, xl, yl, maps, contourcolor,  ..
+contourwidth, ticks, margin, clipping, cx, cy, insimg, spectral,  ..
+cgrid, vertical, smaller, dl, niveau, levels
+
+Error in:
+... ],polygon=1,a=0,b=30,c=0,d=20,filled=1,style="/"); ...
+                                                     ^
+>plot2d("-3/2*x+2.64/.08",add=1,color=12); plot2d(x[1],x[2],>points,>add); insimg;
+ %image% tstSimplex-004.png
+>(c|c.x)_(A|A.x|b)
+     0.12      0.08      2.64         0 
+       30        10       600       600 
+       10        20       300       300 
+>
+% Bei einer Party von Steffi, Verena und Kerstin wollen sie Bowle
+% anbieten, die aus den Mischgetränken Pfirsichmix und Himbeertraum
+% hergestellt wird. Sie rechnen mit einem Mindestverbrauch von 35 l,
+% wobei sie noch 15 l Pfirsichmix haben, die verbraucht werden sollen.
+% Wegen des Geschmacks sollte von der Sorte Himbeertraum mindestens so
+% viel wie von der Sorte Pfirsichmix enthalten sein. Wenn der Anteil
+% von Himbeertraum allerdings mehr als doppelt so hoch wie Pfirsichmix
+% ist, wird das Getränk ungenießbar. Für einen Liter Pfirsichmix müssen
+% sie 0,60 € und für eine Liter Himbertraum 0,75 € zahlen.
+%% Wieviel von welcher Sorte müssen sie für die Bowle verwenden, um
+% möglichst günstig ihre Party zu feiern?
+%% Setze: x = Menge Himbeertraum, y = Menge Pfirsichmix. 
+>A:=[1,1;0,1;1,-1;1,-2]; b:=[35;15;0;0]; c=[.75,.6];
+>{x,r,i}=simplex(A,b,c,[1,1,1,-1]',>min); x
+     17.5 
+     17.5 
+>v=feasibleArea(A,b,[1,1,1,-1]');
+Error : Unbounded problem!
+
+Error generated by error() command
+
+simplex:
+    if r==1 then error("Unbounded problem!"); return x;
+Try "trace errors" to inspect local variables after errors.
+feasibleArea:
+    xn=simplex(A,b,[cos(t[#]),sin(t[#])],eq,restrict);
+>plot2d(v[1],v[2],polygon=1,a=16,b=30,c=12,d=20,filled=1,style="/");
+Argument polygon not in parameter list of function plot2d.
+
+Parameters:
+xv, yv, btest, a, b, c, d, xmin, xmax, r, n, logplot, grid,  ..
+frame, framecolor, square, color, thickness, style, auto,  ..
+add, user, delta, points, addpoints, pointstyle, bar, histogram,  ..
+distribution, even, steps, own, adaptive, hue, level, contour,  ..
+nc, filled, fillcolor, outline, title, xl, yl, maps, contourcolor,  ..
+contourwidth, ticks, margin, clipping, cx, cy, insimg, spectral,  ..
+cgrid, vertical, smaller, dl, niveau, levels
+
+Error in:
+... polygon=1,a=16,b=30,c=12,d=20,filled=1,style="/"); ...
+                                                     ^
+>plot2d("-5/4*x+39.375",add=1,color=12); plot2d(x[1],x[2],>points,>add); insimg;
+ %image% tstSimplex-005.png
+>(c|c.x)_(A|A.x|b)
+     0.75       0.6    23.625         0 
+        1         1        35        35 
+        0         1      17.5        15 
+        1        -1         0         0 
+        1        -2     -17.5         0 
+% * Ganzzahliges Problem 
+% Ein Unternehmen produziert und verkauft vier verschiedene
+% Gartenmaschinen:
+%% Häcksler, Rasenmäher, Kleintraktoren und Mähmaschinen. Pro Häcksler
+% werden 1500 Euro Gewinn erzielt, während pro Rasenmäher 3500 Euro,pro
+% Kleintraktor 3000 Euro und pro Mähmaschine 4000 Euro verdient wird.
+% Das Unternehmen möchte selbstverständlich seinen Gewinn maximieren.
+%% Die Herstellung erfolgt in einem dreistufigen Prozess:
+%% Stufe 1: Einzelteilfertigung
+%% Stufe 2: Oberflächenvergütung
+%% Stufe 3: Montage
+%% Für die einzelnen Fertigungsstufen sind definierte Fertigungszeiten
+% pro Produktionseinheit gegeben. Außerdem sind die
+% Produktionskapazitäten in den einzelnen Fertigungsstufen begrenzt.
+% Folgende Tabelle stellt die Bedingungen dar:
+%% Produkt Häcksler Rasenmäher Traktor Mähmaschine Kapazität
+%% Stufe 1   3.0    1.0    3.0    4.0    315
+%% Stufe 2   1.0    2.0    2.7    4.0    270
+%% Stufe 3   2.0    5.0    5.5    3.0    400
+%% Es wird erwartet, dass maximal 30 Häcksler absetzbar sind. Außerdem
+% sollen aus betriebspolitischen Gründen mindestens zwölf Rasenmäher, 20
+% Kleintraktoren und zehn Mähmaschinen abgesetzt werden.
+>A:=[3,1,3,4;1,2,2.7,4;2,5,5.5,3;1,0,0,0;0,1,0,0;0,0,1,0;0,0,0,1];
+>b:=[315;270;400;30;12;20;10]; c=[1.5,3.5,3,4];
+>eq:=-[1,1,1,1,-1,-1,-1]';
+>x:=intsimplex(A,b,c,eq,>max)
+       10 
+       33 
+       20 
+       35 
+>(c|c.x)_(A|A.x|b)
+      1.5       3.5         3         4     330.5         0 
+        3         1         3         4       263       315 
+        1         2       2.7         4       270       270 
+        2         5       5.5         3       400       400 
+        1         0         0         0        10        30 
+        0         1         0         0        33        12 
+        0         0         1         0        20        20 
+        0         0         0         1        35        10 
+>
+>
