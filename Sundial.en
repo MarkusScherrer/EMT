@@ -1,8 +1,4 @@
-﻿>{theta,psi,r}:=polar(1,-2,-1); [r, deg(theta), deg(psi)]
-[2.44949,  -63.4349,  -24.0948]
->{x,y,z}:=rect(theta,psi,r); [x, y, z]
-[1,  -2,  -1]
-% * Berechnungsgrundlagen Bütschen
+﻿% * Berechnungsgrundlagen Bütschen
 >e:=23.44°; Dek7:=asin(sin(e)*sin([-90:30:90]°)); deg(Dek7)
 [-23.44,  -20.151,  -11.4723,  0,  11.4723,  20.151,  23.44]
 >lat:= 47.41265°; lon:= -7.6958595°; wa:= 18.9°;
@@ -11,7 +7,9 @@
 >tsub:=atan2(sin(lat),tan(wa));
 >[deg(g), deg(f), deg(tsub)/15]
 [39.8089,  -16.5796,  1.66266]
->tau:=[-120:15:150]°; PL:=80; PH=PL*sin(g); PH*[sin(f),cos(f)]/tan(g)
+% tau mit Mittlerer Ortszeit
+>tau:=(15+deg(lon)+[-120:15:150])°; PL:=80; PH=PL*sin(g);  ...
+>PH*[sin(f),cos(f)]/tan(g)
 [-17.5359,  58.8997]
 >function HorAeq(A,h,f=lat)
 $A=rad(A); h=rad(h); 
@@ -32,17 +30,27 @@ $endfunction
 $h=sun(t);
 $return h[2];
 $endfunction
+% Aufgang in Wandflucht
 >{t,d}=HorAeq(-71.1,20,); [t/15, d]
 [-4.19125,  2.62685]
->t=secant("Dekli(x)-d",day(2017,3,24)); printday(t)
+>t1=secant("Dekli(x)-d",day(2017,3,24)); t2=secant("Dekli(x)-d",day(2017,9,20));
+>printday(t1), printday(t2)
 2017-03-27 02:37:19
->t=secant("Dekli(x)-d",day(2017,9,20)); printday(t)
 2017-09-16 01:30:21
+% Untergang in Wandflucht
+>{t,d}=HorAeq(108.9,9,); [t/15, d]
+[6.52675,  19.3705]
+>t1=secant("Dekli(x)-d",day(2017,5,21)); t2=secant("Dekli(x)-d",day(2017,7,21));
+>printday(t1), printday(t2)
+2017-05-17 05:31:57
+2017-07-26 06:58:02
 >function ZifferblattMatrix(f=lat,a=wa,i=0°)
 $Z=zeros(3,3);
 $Z[1,1]=sin(f)*sin(a); Z[1,2]=-cos(a); Z[1,3]=-cos(f)*sin(a);
-$Z[2,1]=cos(f)*cos(i)-sin(f)*cos(a)*sin(i); Z[2,2]=-sin(a)*sin(i); Z[2,3]=cos(f)*cos(a)*sin(i)+sin(f)*cos(i);
-$$Z[3,1]=cos(f)*sin(i)+sin(f)*cos(a)*cos(i); Z[3,2]=sin(a)*cos(i); Z[3,3]=-cos(f)*cos(a)*cos(i)+sin(f)*sin(i);
+$Z[2,1]=cos(f)*cos(i)-sin(f)*cos(a)*sin(i); Z[2,2]=-sin(a)*sin(i);
+$Z[2,3]=cos(f)*cos(a)*sin(i)+sin(f)*cos(i);
+$$Z[3,1]=cos(f)*sin(i)+sin(f)*cos(a)*cos(i); Z[3,2]=sin(a)*cos(i);
+$Z[3,3]=-cos(f)*cos(a)*cos(i)+sin(f)*sin(i);
 $$return Z
 $endfunction
 >D:=ZifferblattMatrix()
@@ -53,13 +61,14 @@ $endfunction
 [1,  106.58,  -39.8089]
 % Umwandlung in kartesische Koordinaten
 >function KartKoo(tau,delta)
-$## wandelt Horizontal- und Vertikalwinkel in kart. Koordinaten in der Einheitskugel um
+$## wandelt Horizontal- und Vertikalwinkel in kart. Koordinaten um
 $return cos(delta)*cos(tau)_cos(delta)*sin(tau)_sin(delta);
 $endfunction
 % Drehung in Koord.system (Z=X,Y,Z) und 
 %% Projektion auf Zifferblat (z=x,y) 
->open("Vertikaluhr.csv","w");
->for i=1:size(Dek7)[2]; Z:=(D.KartKoo(tau,Dek7[i]))'; z:=-PH*Z[,1:2]/Z[,3]; writematrix([-8:10]'|Z|z,separator=";"); end;
+>open("Vertikaluhr.csv","w"); n:=size(Dek7)[2];
+>for i=1:n; Z:=(D.KartKoo(tau,Dek7[i]))'; z:=-PH*Z[,1:2]/Z[,3];  ...
+>writematrix([-8:10]'|Z|z|i,separator=";"); end;
 >close();
 % Topografischer Horizont
 >Sky:=readmatrix("Buetschen_Skyplot.rpt"); 
@@ -71,4 +80,57 @@ $endfunction
 >Z:=(Dhor.KartKoo([-60:15:105]°,0))'; z:=-PH*Z[,1:2]/Z[,3];
 >writematrix([-60:15:105]'|Z|z,separator=";");
 >close();
+% Parameterdarstellung
+>f0:=zeros(n,2); for i=1:n; F0:=(D.KartKoo(tsub,Dek7[i]))';  ...
+>f0[i]:=-PH*F0[,1:2]/F0[,3]; end;
+>writetable(deg(Dek7)'|f0,labc=["Dek","x","y"])
+       Dek         x         y
+    -23.44      4.29    -14.42
+    -20.15      5.22    -17.54
+    -11.47      7.88    -26.47
+         0     12.18    -40.91
+     11.47     18.23    -61.23
+     20.15     25.27    -84.89
+     23.44     28.99    -97.39
+>f2:=zeros(n,2); for i=1:n; F2:=(D.KartKoo(-30°,Dek7[i]))'; f2[i]:=-PH*F2[,1:2]/F2[,3]; end;
+>writetable(deg(Dek7)'|f2,labc=["Dek","x","y"])
+       Dek         x         y
+    -23.44    -55.19    -19.01
+    -20.15    -57.57    -23.93
+    -11.47    -64.92    -39.15
+         0    -78.88    -68.02
+     11.47   -104.48   -120.99
+     20.15   -148.72   -212.54
+     23.44    -182.9   -283.25
+>Mat:=getmatrix(133,7,"Vertikaluhr.csv"); Mat:=Mat[nonzeros(Mat[,4]>0)];
+>plot2d("1/tan(f)*x",a=-300,b=300,c=-500,d=100,color=red,style="-.-",square=1)
+>plot2d([0,PH*sin(f)/tan(g)],[0,PH*cos(f)/tan(g)],>points,>add)
+>for i=1 :n; tm=Mat[nonzeros(Mat[,7]==i),[5:6]]'; plot2d(tm[1],tm[2],>add); end;
+>tm=Mat[nonzeros(Mat[,7]==7),[5:6]]'; plot2d(tm[1],tm[2],>points,>add):
+ %image% Sundial-001.png
+>shortformat
+>X:=Mat[,[5:6]]-f0[4];
+>Df:=[cos(f),sin(f);-sin(f),cos(f)]
+ 0.958424 -0.285347 
+ 0.285347  0.958424 
+>tmp:=(Mat|(X.Df))[,[1,5:9]];
+>
+>function model(t,p) := p[1]*t^2+p[2]*t+p[3];
+>xdata:=tmp[17:29,5]'
+[-256.319,  -125.256,  -77.355,  -50.2862,  -31.323,  -16.0465,
+-2.34986,  11.1308,  25.6686,  43.0054,  66.4368,  104.371,  189.313]
+>ydata:=tmp[17:29,6]'
+[122.572,  61.2547,  41.6079,  32.5108,  27.7451,  25.3012,  24.4103,
+24.8316,  26.6765,  30.487,  37.6866,  52.3163,  90.5296]
+>p:=modelfit("model",[.001,0.01,25],xdata,ydata)
+[0.00157994,  0.0211427,  28.5749]
+>plot2d(xdata,ydata,>points); plot2d("model(x,p)",>add):
+ %image% Sundial-002.png
+>
+>
+>x=[-50:20:50]; y=model(x,[0.05,2,-20]);
+>p:=modelfit("model",[0.005,1,-40],x,y)
+[0.05,  2,  -20]
+>plot2d(x,y,>points); plot2d("model(x,p)",>add):
+ %image% Sundial-003.png
 >
