@@ -8,8 +8,9 @@
 >[deg(g), deg(f), deg(tsub)/15]
 [39.8089,  -16.5796,  1.66266]
 % tau mit Mittlerer Ortszeit, Fusspunkt-Koordinaten
->tau:=(15+deg(lon)+[-120:15:150])°; PL:=80; PH=PL*sin(g);  ...
->F:=PH*[sin(f),cos(f)]/tan(g)
+>tau:=([-120:15:150]-15-deg(lon))°; PL:=80; PH=PL*sin(g);  ...
+>short(PH), F:=PH*[sin(f),cos(f)]/tan(g)
+51.218
 [-17.5359,  58.8997]
 >load "astro.e";
 >now=day(2016,4,21,5,50)
@@ -86,31 +87,27 @@ $endfunction
 >Par:=Par_AxeSub[2]; Par:=Par'; 
 >writetable(Par,labc=["a","b","Dev","e","p","AxeSub"]);
          a         b       Dev         e         p    AxeSub
-     24.55     41.84      4.32     48.51     71.32     27.64
-     21.59     43.07      4.57     48.18     85.93     24.39
-     14.61     55.88      0.56     57.75    213.63     15.07
+     24.65     42.16       4.1     48.84     72.09     27.64
+     21.66     43.33      4.35     48.44     86.67     24.39
+     14.63     55.98      0.53     57.86    214.23     15.07
          0     77.34         0     77.341.11742e+017         0
-    -21.85     80.77      0.87    -83.67   -298.53     -21.2
-    -46.98     89.01      1.24   -100.65   -168.65    -45.88
-     -61.1     96.68      2.57   -114.37   -152.98    -58.92
+    -21.82     80.55      0.81    -83.46    -297.3     -21.2
+    -46.94     88.82      1.17   -100.46   -168.07    -45.88
+    -61.01     96.33      2.41   -114.02    -152.1    -58.92
 >plot2d(Mat[,8]',Mat[,9]',r=250,style="...",>points); ...
 >plot2d(AxeSub[1],AxeSub[2],>points,color=red,style="+",>add); ...
 >plot2d(zeros(n),Par[,4]',>points,>add):
  %image% Sundial-001.png
 >load "geometry.e"
 Numerical and symbolic geometry.
->p=lineWithDirection(F,[cos(lat),sin(lat)])
-[-0.736247,  0.676713,  52.769]
->h=lineThrough([0,0],[1000,0]);
->H=lineIntersection(p,h)
+>p=lineWithDirection(F,[cos(lat),sin(lat)]);
+>h=lineThrough([0,0],[1000,0]); H=lineIntersection(p,h)
 [-71.673,  0]
 >q=lineWithDirection(H,[sin(lat),-cos(lat)]);
->M=lineIntersection(q,lineWithDirection(F,[0,-100]))
-[-17.5359,  -49.7595]
+>M=lineIntersection(q,lineWithDirection(F,[0,-100]));
 >K=circleWithCenter(M,distance(M,H))
 [-17.5359,  -49.7595,  73.5312]
->s=lineThrough(F,[0,0])
-[58.8997,  17.5359,  0]
+>s=lineThrough(F,[0,0]);
 >Z=lineCircleIntersections(s,K)
 [31.206,  -104.815]
 % Darstellung
@@ -119,4 +116,18 @@ Numerical and symbolic geometry.
 >for i=1:n; tm:=Mat[nonzeros(Mat[,1]==i),[3:4]]'; plot2d(tm[1],tm[2],>add); end;
 >plotPoint(F,"F"); plotPoint(M,"M"); plotPoint(H,"H"); plotPoint(Z,"Z"); plotSegment(F,[0,0],""):
  %image% Sundial-002.png
+>z:=atan(tan(tau-tsub)*sin(g));
+>tmp:=((tau+lon+15°)/15_z_z-f)'; writetable(deg(tmp[6:16]),labc=["t","zM","zS"])
+         t        zM        zS
+        -3    -70.53    -53.95
+        -2    -50.58       -34
+        -1     -34.7    -18.12
+         0    -21.99     -5.41
+         1    -11.24      5.34
+         2     -1.44     15.14
+         3      8.25     24.83
+         4     18.62      35.2
+         5     30.62      47.2
+         6     45.42        62
+         7     64.14     80.71
 >

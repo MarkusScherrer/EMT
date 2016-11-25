@@ -1,0 +1,51 @@
+﻿>lat&= 47.41265°; lon&= -7.6958595°; wa&=18.9°; ic&=0°;
+>g&=asin(cos(lat)*cos(wa)); f&=atan2(tan(lat),-sin(wa));
+>tsub&=atan2(sin(lat),tan(wa));
+>D&=[sin(lat)*sin(wa),-cos(wa), -cos(lat)*sin(wa); ...
+>cos(lat)*cos(ic)-sin(lat)*cos(wa)*sin(ic),-sin(wa)*sin(ic), ...
+>cos(lat)*cos(wa)*sin(ic)+sin(lat)*cos(ic); ...
+>cos(lat)*sin(ic)+sin(lat)*cos(wa)*cos(ic),sin(wa)*cos(ic), ...
+>-cos(lat)*cos(wa)*cos(ic)+sin(lat)*sin(ic)];
+>xv&=[cos(d)*cos(t),cos(d)*sin(t),sin(d)]
+
+                [cos(d) cos(t), cos(d) sin(t), sin(d)]
+
+>function f(x) &= float((D.xv)[3] with [d=-23.44°,t=x])
+
+       [0.2971868266140045 sin(x) + 0.6390705794985604 cos(x)
+                                                 + 0.2546756080719745]
+
+>secant("f",-120°,0,y=0); deg(%)
+-86.24322525
+>&(D.xv)[1]^2+(D.xv)[2]^2=10000*(D.xv)[3]^2
+
+       [expt(- cos(0.105 pi) cos(d) sin(t)
+ + sin(0.105 pi) sin(0.2634036111111111 pi) cos(d) cos(t)
+ - sin(0.105 pi) cos(0.2634036111111111 pi) sin(d), 2)
+ + expt(cos(0.2634036111111111 pi) cos(d) cos(t)
+ + sin(0.2634036111111111 pi) sin(d), 2)] = 
+[10000 expt(sin(0.105 pi) cos(d) sin(t)
+ + cos(0.105 pi) sin(0.2634036111111111 pi) cos(d) cos(t)
+ - cos(0.105 pi) cos(0.2634036111111111 pi) sin(d), 2)]
+
+>&(float(solve(% with d=0,t)) with t=x)
+
+                               2
+       [[- 1048.32986061536 sin (x) - 4512.958059070314 cos(x) sin(x)
+                                                          2
+                                   - 4851.332714277271 cos (x)] = 0.0]
+
+>function f(x) &= lhs(%[1])
+
+                              2
+       [- 1048.32986061536 sin (x) - 4512.958059070314 cos(x) sin(x)
+                                                                 2
+                                          - 4851.332714277271 cos (x)]
+
+>secant("f",0,y=0)
+-1.12249677516
+>t&=%
+
+                         - 1.122496775162309
+
+>
