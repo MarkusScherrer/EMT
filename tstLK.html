@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+<title>The Programming Language of Euler</title>
+<style type="text/css">
+body { 
+	width : 700px; 
+	font-family: arial, sans-serif; 
+	font-size: 10pt; 
+	margin: 20px; 
+	margin-left: 100px; 
+}
+pre { 
+	font-family : "Courier New", monospace; 
+	background: #EEE; 
+	padding: 10px; 
+	margin-left: 15%; 
+}
+pre.output { 
+	background:none; 
+	margin-left: 5%; 
+}
+pre.udf { 
+	margin-left: 0; 
+}
+pre.prompt { 
+	margin-left: 0; 
+}
+pre.comment { 
+	background: none; 
+	margin-left: 7%; 
+}
+p.comment { 
+	margin-left: 5%; 
+	margin-right: 5%; 
+}
+p.indentedcomment { 
+	margin-left: 10%; 
+}
+h1.title { 
+	font-family : arial, sans-serif; 
+	text-align : right; 
+	font-size : 24pt; 
+	padding-bottom: 5pt; 
+}
+h1.comment, h1.comment a { 
+	font-family : arial, sans-serif; 
+	text-align : right; 
+	font-size : 16pt; 
+}
+h2.comment, h2.comment a { 
+	font-family : arial, sans-serif; 
+	text-align : right; 
+	font-size : 12pt; 
+}
+h1.title, h1.comment, h2.comment {
+	border-bottom: 2px solid; 	
+}
+ul.comment { 
+	font-family : arial, sans-serif; 
+	font-size : 10pt; 
+	margin-left: 10%; 
+	margin-right: 10%; 
+	padding-left:0; 
+}
+img.euler { }
+p.image { 
+	text-align:center; margin-left:50px; 
+}
+a:link { 
+	font-weight:bolder; 
+	text-decoration:none; 
+}
+a:visited { 
+	font-weight:bolder; 
+	text-decoration:none; 
+}
+</style>
+</head>
+
+<body>
+<h1 class="title">tstLK</h1>
+<pre class="prompt">&gt;{Mt,clb,tk,rlb}=readtable("ABC.txt",&gt;clabs,&gt;rlabs);
+&gt;writetable(Mt,labc=clb,labr=rlb)
+</pre>
+<pre class="output">                  ST        SK        BS        AS        PR        LR
+   Bobby23       600       300       300       600       600       350
+   Bobby24       590       295       295       444       594       297
+       Std       320       500       500       700       250       750
+       Off       200       600       600       300       200      1000
+       Def       720       310       300       700       650       300
+</pre>
+<pre class="prompt">&gt;At:=10*[0,181,143,0,0,111], Df:=Mt[1]
+</pre>
+<pre class="output">[0,  1810,  1430,  0,  0,  1110]
+[600,  300,  300,  600,  600,  350]
+</pre>
+<pre class="prompt">&gt;load "LK.e";
+&gt;writetable(Off|Def,wc=9,dc=0,&gt;fixed,labr=lTR,labc=lSK)
+</pre>
+<pre class="output">                oI       oA       oK       dI       dA       dK
+       ST        8        6       13       69       44      130
+       SK       43       26       63       56       28       83
+       BS       66       22       11       69       32       23
+       AS       23       17       10      201      132       72
+       PR       17       26       23       60      132       81
+       LR       36      109       63       28       56       35
+</pre>
+<pre class="prompt">&gt;b:=Def'.Df'+1000
+</pre>
+<pre class="output">       246300 
+       223400 
+       214850 
+</pre>
+<p class="comment">Lösung A\b
+</p>
+<pre class="prompt">&gt;x:=ceil(A\b)
+</pre>
+<pre class="output">         1854 
+         1852 
+         1234 
+</pre>
+<pre class="prompt">&gt;r:=(b/(A.x))'
+</pre>
+<pre class="output">[0.999683,  0.999758,  0.999693]
+</pre>
+<pre class="prompt">&gt;vx:=ceil(x'*r); vx|sum(vx)
+</pre>
+<pre class="output">[1854,  1852,  1234,  4940]
+</pre>
+<p class="comment">optimale Lösung mit intsimplex
+</p>
+<pre class="prompt">&gt;c:=ones(3)
+</pre>
+<pre class="output">[1,  1,  1]
+</pre>
+<pre class="prompt">&gt;{x2,r}:=intsimplex(A,b,c,&gt;min,eq=1,i="all",ire=[1,1,1]); x3'
+</pre>
+<pre class="output">[2,  2068,  3048]
+</pre>
+<pre class="prompt">&gt;c=(b/(A.x2))'
+</pre>
+<pre class="output">[1,  0.998021,  0.999986]
+</pre>
+<pre class="prompt">&gt;vx2:=ceil(x2'*c); vx2|sum(vx2)
+</pre>
+<pre class="output">[1849,  1849,  1239,  4937]
+</pre>
+<p class="comment">optimale Lösung nach lpsolve
+</p>
+<pre class="prompt">&gt;x3:=[2,2068,3048]'; x3'
+</pre>
+<pre class="output">[2,  2068,  3048]
+</pre>
+<pre class="prompt">&gt;A.x3|b|A.x3-b
+</pre>
+<pre class="output">       246302        246300             2 
+       377780        223400        154380 
+       214898        214850            48 
+</pre>
+<pre class="prompt">&gt;r:=(b/(A.x3))'
+</pre>
+<pre class="output">[0.999992,  0.591349,  0.999777]
+</pre>
+<pre class="prompt">&gt;vx3:=ceil(x3'*r); vx3|sum(vx3)
+</pre>
+<pre class="output">[2,  1223,  3048,  4273]
+</pre>
+</body>
+</html>

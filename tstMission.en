@@ -1,0 +1,80 @@
+﻿>At:=[0,1,1,0,0,1]; Df:=[1,1,1,1,1,1];
+>load "LK.e";
+>t:=[.75,5,24,6,12,10]'; 
+>tab1:=middle(MR)/t; c1=sum(tab1); r1=sum(tab1')';  ...
+>tot=sum(c1'); tab1:=(tab1|c1|c1/tot);
+% stündl. Erträge
+>writetable((tab1_sum(tab1')')_r1/tot, ...
+>labr=lMS+"Total"+"Anteil",labc=lRS+"Summe"+"Anteil")
+                   H         S         E     Summe    Anteil
+  Werkzeug       120       200       120       440      0.15
+    Kontor       225       225       375       825      0.29
+   Steuern     67.08     67.08      87.5    221.67      0.08
+    Räuber       150       150       260       560       0.2
+      Burg        75        75       150       300       0.1
+    Ritter       128       128       256       512      0.18
+     Total    765.08    845.08    1248.5   2858.67         1
+    Anteil      0.27       0.3      0.44         0         0
+% Halbintervall (stündl.)
+>writetable((middle(MR)-left(MR))/t,dc=0,labr=lMS,labc=lRS)
+                   H         S         E
+  Werkzeug        40        67        40
+    Kontor        75        75       125
+   Steuern        29        29        38
+    Räuber       100       100       173
+      Burg         8         8        17
+    Ritter        32        32        64
+% Burgentypen
+>{Mt,clb,tk,rlb}=readtable("ABC.txt",>clabs,>rlabs); ext:=[2:4];
+>writetable(Mt[ext],labc=clb,labr=rlb)
+                  ST        SK        BS        AS        PR        LR
+     P3611       320       500       500       700       250       750
+       Std       200       600       600       300       200      1000
+       Off       720       310       300       700       650       300
+>writetable((M_sum(M')')|t,labr=lMS+"Total", labc=lTR+"t")
+                  ST        SK        BS        AS        PR        LR         t
+  Werkzeug        20        40        30         0         0         0      0.75
+    Kontor        70        70        70         0        30         0         5
+   Steuern       200       200         0       100        50         0        24
+    Räuber         0       100       150         0        50       100         6
+      Burg       100       100       100       100         0         0        12
+    Ritter       100         0         0       100       100       100        10
+     Total       490       510       350       300       230       200         0
+>MT:=[[1,1,0,0,1,1];[1,1,0,1,0,0];[1,1,0,0,1,1]];
+>writetable(MT',labr=lMS,labc=rlb[ext])
+                 Std       Off       Def
+  Werkzeug         1         1         1
+    Kontor         1         1         1
+   Steuern         0         0         0
+    Räuber         0         1         0
+      Burg         1         0         1
+    Ritter         1         0         1
+% Truppenbedarf
+>writetable(MT.M,labc=lTR,labr=rlb[ext])
+                  ST        SK        BS        AS        PR        LR
+       Std       290       210       200       200       130       100
+       Off        90       210       250         0        80       100
+       Def       290       210       200       200       130       100
+>writetable(Mt[ext]-MT.M,labc=lTR,labr=rlb[ext])
+                  ST        SK        BS        AS        PR        LR
+       Std        30       290       300       500       120       650
+       Off       110       390       350       300       120       900
+       Def       430       100       100       500       520       200
+>iD=[1,4,5]; iO=[2,3,6];
+>writetable(Off,labr=lTR,labc=lKL)
+                   I         A         K
+        ST         8         6        13
+        SK        43        26        63
+        BS        66        22        11
+        AS        23        17        10
+        PR        17        26        23
+        LR        36       109        63
+>writetable(Def,labr=lTR,labc=lKL)
+                   I         A         K
+        ST        52        33        97
+        SK        42        21        63
+        BS        52        24        17
+        AS       151        99        54
+        PR        45        99        61
+        LR        21        42        26
+>
