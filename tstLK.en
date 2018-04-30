@@ -1,0 +1,60 @@
+﻿>{Mt,clb,tk,rlb}=readtable("ABC.txt",>clabs,>rlabs);
+>writetable(Mt,labc=clb,labr=rlb)
+                  ST        SK        BS        AS        PR        LR
+   Bobby23       600       300       300       600       600       350
+   Bobby24       590       295       295       444       594       297
+   Bobby25       500       250       240       284       500       250
+    Basis4       316       156       148       302       386         0
+ DeathNote       126         0       123         0       231         0
+     Bärte       462        11        11       443       404         7
+   Kottwil       916        27        87         4         0         0
+       Std       320       500       500       700       250       750
+       Off       200       600       600       300       200      1000
+       Def       720       310       300       700       650       300
+>At:=10*[0,181,143,0,0,111], Df:=Mt[1]
+[0,  1810,  1430,  0,  0,  1110]
+[600,  300,  300,  600,  600,  350]
+>load "LK.e";
+>writetable(Off|Def,wc=9,dc=0,>fixed,labr=lTR,labc=lSK)
+                oI       oA       oK       dI       dA       dK
+       ST        8        6       13       69       44      130
+       SK       43       26       63       56       28       83
+       BS       66       22       11       69       32       23
+       AS       23       17       10      201      132       72
+       PR       17       26       23       60      132       81
+       LR       36      109       63       28       56       35
+>rD:=Def'.Df'+1000; b:=rD
+       246300 
+       223400 
+       214850 
+>plot3d("(-43*x-26*y)/63",r=1000);
+>plot3d("(-66*x-22*y)/11",>add); ...
+>plot3d("(-36*x-109*y)/63",>add);
+% Lösung A\b
+>x:=A\b; x'
+[1853.25,  1851.41,  1233.8]
+>r:=(b/(A.x))'
+[1,  1,  1]
+>vx:=ceil(x'*r); vx|sum(vx)
+[1854,  1852,  1234,  4940]
+% optimale Lösung mit intsimplex
+>c:=r
+[1,  1,  1]
+>{x2,r}:=intsimplex(A,b,c,>min,eq=1,i="all",ire=[1,1,1]); x2'
+[1853,  1852,  1234]
+>r=(b/(A.x2))'
+[0.999858,  0.999875,  0.999986]
+>vx2:=ceil(x2'*c); vx2|sum(vx2)
+[1853,  1852,  1234,  4939]
+>c:=r; startlpsolve; {x3,obj,duals}:=ilpsolve(A,b,c,<max,eq=1); x3'
+[1854,  1851,  1234]
+>r=(b/(A.x3))'
+[0.999951,  0.999857,  0.999744]
+>b|A.x-b|A.x2-b|A.x3-b
+       246300             0            35            12 
+       223400  2.91038e-011            28            32 
+       214850             0             3            55 
+>vx3:=ceil(x3'*r); vx3|sum(vx3)
+[1854,  1851,  1234,  4939]
+>
+>

@@ -70,7 +70,7 @@ labr=["x","loss","rA","rD","rA-rD","Schaden","Verlust"]);
 return key;
 endfunction
 
-function Silber(Silber,Anz,Kapaz=[1450,200,20])
+function Silber(Silber,Anz,Kapaz=[1600,200,20])
 SpVerm=Anz*Kapaz; SpVerm=SpVerm|sum(SpVerm);
 hilf=[25,5,1];
 Bedarf=Anz.hilf'*hilf|0;

@@ -1,0 +1,219 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage{eumat}
+
+\begin{document}
+\begin{eulernotebook}
+\begin{eulerprompt}
+>load "LK.e";
+>\{Mt,clb,tk,rlb\}=readtable("ABC.dat",>clabs,>rlabs);
+>writetable(Mt[,[1:6]],wc=8,labc=clb[1:6],labr=rlb);
+\end{eulerprompt}
+\begin{euleroutput}
+                ST      SK      BS      AS      PR      LR
+  Nuno_131      79     247     447      51     241     556
+  Nuno_4626     910       0     921     839    1259     555
+  AngelEye_0035    1564     981    2480     992    2445    5199
+  AngelEye_0039     584     159    1836     597    3019    2408
+\end{euleroutput}
+\begin{eulerprompt}
+>s=4; Df:=Mt[s], At:=round(1*[0,3090,4228,0,0,3089],0)
+\end{eulerprompt}
+\begin{euleroutput}
+  [584,  159,  1836,  597,  3019,  2408,  0,  673,  466,  0,  0,  0]
+  [0,  3090,  4228,  0,  0,  3089]
+\end{euleroutput}
+\begin{eulerprompt}
+>rD:=1.2*Mt[1:4].(Def_DSpez)+8000;
+>writetable(rD/sum(rD),labr=rlb,labc=lKL)
+\end{eulerprompt}
+\begin{euleroutput}
+                     I         A         K
+    Nuno_131      0.35      0.34      0.31
+   Nuno_4626      0.36      0.35       0.3
+  AngelEye_0035      0.34      0.36       0.3
+  AngelEye_0039      0.32       0.4      0.28
+\end{euleroutput}
+\begin{eulerprompt}
+>rDg:=rD/sum(rD)*[1,1,1.0];
+>x=A\(\backslash\)rD'; t:=x'/sum(x');
+>writetable(round(x',0)|t,labc=clb[[2,3,6,2,3,6]],labr=rlb,wc=8)
+\end{eulerprompt}
+\begin{euleroutput}
+                SK      BS      LR      SK      BS      LR
+  Nuno_131     934    1011     812    0.34    0.37    0.29
+  Nuno_4626    2838    3922    2859     0.3    0.41     0.3
+  AngelEye_0035    7100    9965    8411    0.28    0.39    0.33
+  AngelEye_0039    2758    5684    6470    0.18    0.38    0.43
+\end{euleroutput}
+\begin{eulerprompt}
+>c=rDg[s], b=rD[s]';
+\end{eulerprompt}
+\begin{euleroutput}
+  [0.31976,  0.396909,  0.28333]
+\end{euleroutput}
+\begin{eulerprompt}
+>startlpsolve; \{x2,obj,duals\}:=ilpsolve(A,b,c,<max,eq=1); x2'
+\end{eulerprompt}
+\begin{euleroutput}
+  [2754,  5685,  6474]
+\end{euleroutput}
+\begin{eulerprompt}
+>c=(rD[s]'/(A.x2))'
+\end{eulerprompt}
+\begin{euleroutput}
+  [0.999991,  0.999644,  0.999998]
+\end{euleroutput}
+\begin{eulerprompt}
+>X=floor(x)'.U2; rlb[s]
+\end{eulerprompt}
+\begin{euleroutput}
+  AngelEye_0039
+\end{euleroutput}
+\begin{eulerprompt}
+>bat(X[s],rD[s])
+\end{eulerprompt}
+\begin{euleroutput}
+                             I             A             K           sum
+               x          2757          5684          6470         14911
+            loss          2757          5684          6470         14911
+              rA        726615        901960        643825   2.2724e+006
+              rD        726690        902019        643898  2.27261e+006
+           rA-rD         -74.6         -59.2           -73        -206.8
+         Schaden             1             1             1             3
+         Verlust             1             1             1             3
+  [1.0001,  1.00007,  1.00011]
+\end{euleroutput}
+\begin{eulerprompt}
+>bat(x2'.U2,rD[s])
+\end{eulerprompt}
+\begin{euleroutput}
+                             I             A             K           sum
+               x          2754          5685          6474         14913
+            loss          2754          5683          6474         14911
+              rA        726696        902340        643899  2.27294e+006
+              rD        726690        902019        643898  2.27261e+006
+           rA-rD           6.4         320.8             1         328.2
+         Schaden             1             1             1             3
+         Verlust             1             1             1             3
+  [0.999991,  0.999644,  0.999998]
+\end{euleroutput}
+\begin{eulerprompt}
+>bat(At,rD[s])
+\end{eulerprompt}
+\begin{euleroutput}
+                             I             A             K           sum
+               x          3090          4228          3089         10407
+            loss          3090          4228          3089         10407
+              rA        523122        510057        435785  1.46896e+006
+              rD        726690        902019        643898  2.27261e+006
+           rA-rD       -203568       -391962       -208113       -803643
+         Schaden          0.72          0.57          0.68          1.96
+         Verlust          1.39          1.77          1.48          4.64
+  [1.38914,  1.76847,  1.47756]
+\end{euleroutput}
+\eulerheading{Varianten}
+\begin{eulerprompt}
+>fight2(floor(X[s]),Mt[s][1:6]);
+\end{eulerprompt}
+\begin{euleroutput}
+       Rnd      ST      SK      BS      AS      PR      LR     Sum
+         0       0    2757    5684       0       0    6470   14911
+         1       0    1502    3008       0       0    3396    7906
+         2       0     850    1652       0       0    1856    4358
+         3       0     507     960       0       0    1074    2541
+         4       0     323     601       0       0     668    1592
+         5       0     222     409       0       0     448    1079
+         6       0     162     299       0       0     320     781
+  
+       Rnd      ST      SK      BS      AS      PR      LR     Sum
+         0     584     159    1836     597    3019    2408    8603
+         1     292      79     918     298    1509    1204    4300
+         2     146      39     459     149     754     602    2149
+         3      73      19     229      74     377     301    1073
+         4      36       9     114      37     188     150     534
+         5      18       4      57      18      94      75     266
+         6       9       2      28       9      47      37     132
+\end{euleroutput}
+\begin{eulerprompt}
+>fight2(x2'.U2,Mt[s][1:6]);
+\end{eulerprompt}
+\begin{euleroutput}
+       Rnd      ST      SK      BS      AS      PR      LR     Sum
+         0       0    2754    5685       0       0    6474   14913
+         1       0    1500    3009       0       0    3398    7907
+         2       0     849    1653       0       0    1857    4359
+         3       0     506     961       0       0    1075    2542
+         4       0     323     602       0       0     668    1593
+         5       0     222     409       0       0     448    1079
+         6       0     162     299       0       0     320     781
+  
+       Rnd      ST      SK      BS      AS      PR      LR     Sum
+         0     584     159    1836     597    3019    2408    8603
+         1     292      79     918     298    1509    1204    4300
+         2     146      39     459     149     754     602    2149
+         3      73      19     229      74     377     301    1073
+         4      36       9     114      37     188     150     534
+         5      18       4      57      18      94      75     266
+         6       9       2      28       9      47      37     132
+\end{euleroutput}
+\begin{eulerprompt}
+>fight2(At,Mt[s][1:6]);
+\end{eulerprompt}
+\begin{euleroutput}
+       Rnd      ST      SK      BS      AS      PR      LR     Sum
+         0       0    3090    4228       0       0    3089   10407
+         1       0    1545    2114       0       0    1544    5203
+         2       0     772    1057       0       0     772    2601
+         3       0     386     528       0       0     386    1300
+         4       0     193     264       0       0     193     650
+         5       0      96     132       0       0      96     324
+         6       0      48      66       0       0      48     162
+  
+       Rnd      ST      SK      BS      AS      PR      LR     Sum
+         0     584     159    1836     597    3019    2408    8603
+         1     353      96    1284     417    1943    1550    5643
+         2     248      67     990     321    1411    1125    4162
+         3     199      53     836     271    1148     915    3422
+         4     175      46     757     245    1018     811    3052
+         5     163      42     717     232     953     759    2866
+         6     157      40     696     225     921     733    2772
+\end{euleroutput}
+\begin{eulerprompt}
+>Silber(7570,[1,41,38])
+\end{eulerprompt}
+\begin{euleroutput}
+                       Stadt      Festung         Burg        Total
+            Anz            1           41           38            0
+  Kapaz/Habitat         1450          200           20            0
+   Fassvermögen         1450         8200          760        10410
+    Fassung [%]         13.9         78.8          7.3          100
+         Silber         6700         1340          268         7570
+      Ideal [%]          8.4         59.8         70.1         72.7
+          Stadt        121.2         16.7          1.7       1054.4
+        Festung        867.8        119.7           12        145.4
+           Burg       1017.1        140.3           14         14.5
+  [0.0835735,  0.598463,  0.701441,  0.727185]
+\end{euleroutput}
+\begin{eulerprompt}
+>k0:=1000*(A\(\backslash\)[1,1,1]'); K:=Def.inv(A); writetable(K'|k0,labr=lTR[[2,3,6]],labc=lTR+"k0")
+\end{eulerprompt}
+\begin{euleroutput}
+                    ST        SK        BS        AS        PR        LR        k0
+          SK      0.32      0.21      0.49      2.07      1.95      0.83      9.02
+          BS      0.76      0.34     -0.51     -1.38      0.42      0.15      6.12
+          LR      0.56       0.6      0.97      2.35     -0.55     -0.18      5.79
+\end{euleroutput}
+\begin{eulerprompt}
+>writetable(Off|Def,wc=9,labr=lTR,labc=lSK)
+\end{eulerprompt}
+\begin{euleroutput}
+                  oI       oA       oK       dI       dA       dK
+         ST        8        6       13       69       44      130
+         SK       43       26       63       56       28       83
+         BS       66       22       11       69       32       23
+         AS       23       17       10      201      132       72
+         PR       17       26       23       60      132       81
+         LR       36      109       63       28       56       35
+\end{euleroutput}
+\end{eulernotebook}
+\end{document}
