@@ -1,17 +1,17 @@
 ﻿% * Grundlagen
->load "astro.e";
->now=day(2016,4,21,5,50)
-5954.74305556
+>lat:= 47.5°; load "astro.e";
+>now=day(2022,1,13,12,21,30)
+8048.01458333
 >printday(now), getymdhms(now)
-2016-04-21 05:50:00
-[2016,  4,  21,  5,  50,  0]
+2022-01-13 12:21:00
+[2022,  1,  13,  12,  21,  0]
 >locMünchenstein
 [7.61322,  47.5212,  335.78]
->here=[locMünchenstein,20,1013];
+>here=[locMünchenstein,5,1013];
 >sun(now)
-[29.4026,  12.0136,  1.005]
+[295.129,  -21.4295,  0.983523]
 >raltaz(now,here,sun(now))
-[85.7666,  12.5583]
+[190.624,  20.4255]
 % * Sonnenauf- und untergänge
 >function SunAz(t=now,loc=here) ....
 $h=raltaz(t,loc,sun(t));
@@ -21,40 +21,40 @@ $endfunction
 $h=raltaz(t,loc,sun(t));
 $$return h[2];
 $endfunction
->SunAz(), SunAz(day(2016,3,25,11,35.6))
-85.766605914
-180.077161616
+>SunAz(), SunAz(day(2022,3,25,11,35.5))
+190.624207618
+180.000996406
 >printday(rise("sun",now,here)), printday(set("sun",now,here))
-2016-04-22 04:29:18
-2016-04-21 18:26:08
->plot2d("SunAzmap(daymap(2016,6,21,x))",a=3.5,b=19.5,color=2, grid=3);
->plot2d("SunAzmap(daymap(2016,3,21,x))",color=3,add=1);
->plot2d("SunAzmap(daymap(2016,12,21,x))",color=12,add=1);
->plot2d("SunAzmap(daymap(2016,9,23,x))",color=4,add=1);
+2022-01-14 07:15:08
+2022-01-13 16:01:00
+>plot2d("SunAzmap(daymap(2022,6,21,x))",a=3.5,b=19.5,color=2, grid=3);
+>plot2d("SunAzmap(daymap(2022,3,21,x))",color=3,add=1);
+>plot2d("SunAzmap(daymap(2022,12,21,x))",color=12,add=1);
+>plot2d("SunAzmap(daymap(2022,9,23,x))",color=4,add=1);
 >xgrid(0:1:24); ygrid([60:30:300]); ygrid([103,283],color=1); ygrid([54,126,234,306],color=2); insimg(40);
  %image% tstAstro-001.png
->plot2d("SunAltmap(daymap(2016,6,21,x))",a=3.5,b=19.5,c=-15,d=75,color=2,grid=1);
->plot2d("SunAltmap(daymap(2016,3,21,x))",color=3,add=1);
->plot2d("SunAltmap(daymap(2016,9,23,x))",color=4,add=1);
->plot2d("SunAltmap(daymap(2016,12,21,x))",color=12,add=1);
+>plot2d("SunAltmap(daymap(2022,6,21,x))",a=3.5,b=19.5,c=-15,d=75,color=2,grid=1);
+>plot2d("SunAltmap(daymap(2022,3,21,x))",color=3,add=1);
+>plot2d("SunAltmap(daymap(2022,9,23,x))",color=4,add=1);
+>plot2d("SunAltmap(daymap(2022,12,21,x))",color=12,add=1);
 >xgrid(0:1:24); ygrid([-10:10:60]); ygrid([19,42.5,66],color=2); insimg(40);
  %image% tstAstro-002.png
 % Auf- und Untergänge über Zeitintervall (zZ deaktiviert!)
->..s=day(2016,1,1):1:day(2016,12,31); l=ones([2,cols(s)]); for i=1 to cols(s); l[1,i]:=rise("sun",s[i],here); end;
+>..s=day(2022,1,1):1:day(2022,12,31); l=ones([2,cols(s)]); for i=1 to cols(s); l[1,i]:=rise("sun",s[i],here); end;
 >..for i=1 to cols(s); l[2,i]:=set("sun",s[i],here); end;
 >..raltaz(l[1,-1],here,sun(l[1,-1])), raltaz(l[2,-1],here,sun(l[2,-1]))
 >..rA=(l[1]_SunAzmap(l[1])_l[2]_SunAzmap(l[2]))';
 >..writematrix(rA,"riseAzi.txt");
 >{MT,hd}=readtable("riseAzi.txt"); writetable(MT[1:8],dc=5,wc=15,fixed=[1,0,1,0],labc=["tRise","AziRise","tSet","AziSet"]);
           tRise        AziRise           tSet         AziSet
-     5114.80517         124.47     5115.15823        235.584
-     5115.80512        124.314     5116.15894        235.744
-     5116.80504        124.147     5117.15966        235.916
-     5117.80492        123.967     5118.16042          236.1
-     5118.80477        123.775     5119.16119        236.296
-     5119.80459        123.572     5120.16199        236.504
-     5120.80437        123.357     5121.16281        236.723
-     5121.80412         123.13     5122.16364        236.955
+     8036.80496        124.418     8037.15840        235.635
+     8037.80491        124.262     8038.15911        235.796
+     8038.80483        124.094     8039.15984        235.968
+     8039.80471        123.914     8040.16059        236.153
+     8040.80456        123.722     8041.16137        236.349
+     8041.80437        123.518     8042.16217        236.558
+     8042.80416        123.302     8043.16298        236.778
+     8043.80391        123.075     8044.16382         237.01
 % Erstellen von Planetentabellen
 >function SunPos(t1,t2,inc)...
 $global here
@@ -69,26 +69,26 @@ $return suntab
 $endfunction
 % * Vertikale Sonnenuhr
 % Berechnungselemente, Besonnungsdauer und Streiflicht
->t=secant("SunAz(day(2016,4,20,x))-283",17,19); hmsprint(t), raltaz(day(2016,4,20,t),here,sun(day(2016,4,20,t)))
-17:55:35
-[283,  4.35835]
->t=secant("SunAz(day(2016,4,20,x))-103",6,9); hmsprint(t), raltaz(day(2016,4,20,t),here,sun(day(2016,4,20,t)))
-07:19:36
-[103,  27.2867]
+>t=secant("SunAz(day(2022,4,20,x))-283",17,19); hmsprint(t), raltaz(day(2022,4,20,t),here,sun(day(2022,4,20,t)))
+17:56:14
+[283,  4.16796]
+>t=secant("SunAz(day(2022,4,20,x))-103",6,9); hmsprint(t), raltaz(day(2022,4,20,t),here,sun(day(2022,4,20,t)))
+07:19:07
+[103,  27.0808]
 % Streiflichtberechnung
->d=day(2016,2,22,6):1:day(2016,10,19,6);
+>d=day(2022,2,22,6):1:day(2022,10,19,6);
 >l=ones([2,cols(d)]); for i=1 to cols(d); t=secant("SunAz(x,here)-103",d[i]); l[1,i]=t; l[2,i]=raltaz(t,here,sun(t))[2]; end;
 >writematrix(l',"Streiflicht.txt");
 >{MT,hd}=readtable("Streiflicht.txt"); writetable(MT[1:5],dc=5,wc=15,fixed=[1,0],labc=["day","Höhe"]);
             day           Höhe
-     5896.76180       -1.00376
-     5897.76263       -0.56444
-     5898.76346       -0.14822
-     5899.76428        0.27062
-     5900.76511        0.70202
+     8088.76221        -0.7271
+     8089.76305       -0.30815
+     8090.76388        0.10325
+     8091.76470        0.52445
+     8092.76552         0.9604
 >printday(MT[1,1]), printday(MT[-1,1])
-2016-02-23 06:16:59
-2016-10-19 05:48:01
+2022-02-23 06:17:35
+2022-10-19 05:48:41
 % geogr. Breite, Länge und Wandabweichung (West)
 >phi=47.5212; la=-7.61322; wa=13.55;
 % Erhebungs- und Substilarwinkel, Hilfsstundenwinkel
@@ -121,7 +121,7 @@ $endfunction
 >plot2d("bd",add=1,color=2,thickness=2); xgrid([-35:5:35]); ygrid([0:15:90]); insimg(30);
  %image% tstAstro-003.png
 % * Analemma (Deklination / Zeitgleichung)
->t=day(2016,1,1):1:day(2016,12,31); ...
+>t=day(2022,1,1):1:day(2022,12,31); ...
 >l=ones([2,cols(t)]); for i=1 to cols(t); hi:=sun(t[i]); l[1,i]:=hi[2]; l[2,i]:=(-hi[1]+gst(t[i])); end; ...
 >l[2]:=(mod(l[2],360)-180)/15*60; writematrix((t_l)',"Analemma.txt");
 >aspect(0.5); plot2d(l[2],l[1],a=-15,b=17,c=-25,d=25,xl="Zeitgleichung [min]", yl="Dekl. [°]",>points,style=".",grid=0,>vertical);  ...

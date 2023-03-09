@@ -4554,7 +4554,6 @@ locReekie:=[-3 + 12/60, 55 + 57/60, 50];
 locIngolstadt:=[11.433,48.767,400];
 locMünchenstein:=[7.613215, 47.521183,  335.78];
 
-
 function tmoon(day, station)
 ## Topocentric equatorial coordinates of Moon
 ##
