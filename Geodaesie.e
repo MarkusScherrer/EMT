@@ -9,7 +9,6 @@ EE = 0.081696831215255838;
 EE2= 0.006674372230614;
 fi0= 0.81947406867612183;
 l0 = 0.12984522414316146;
-R=a*sqrt(1-EE2)/(1-EE2*sin(fi0)^2);
 Alfa=sqrt(1+EE2/(1-EE2)*cos(fi0)^4);
 b0=asin(sin(fi0)/Alfa);
 K=log(tan(pi()/4+b0/2))-Alfa*log(tan(pi()/4+fi0/2))+Alfa*EE/2*log((1+EE*sin(fi0))/(1-EE*sin(fi0)));
